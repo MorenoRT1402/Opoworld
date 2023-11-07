@@ -1,0 +1,5 @@
+DELETE http://localhost:3001/api/avatars/653b985680c79268ed1bcf26
+
+{
+    "_id": "653a4c8bd53397a8cb9ca155"
+}

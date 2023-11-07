@@ -1,0 +1,25 @@
+{
+  "name": "opoworld",
+  "private": true,
+  "version": "1.0.0",
+  "description": "",
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "build": "npm run build --workspace=client",
+    "start": "npm run start --workspace=server",
+    "dev:api": "npm run build && npm run dev --workspace=server"
+  },
+  "eslintConfig": {
+    "extends": "./node_modules/standard/eslintrc.json"
+  },
+  "devDependencies": {
+    "standard": "17.1.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

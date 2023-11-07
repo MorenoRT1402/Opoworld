@@ -1,0 +1,35 @@
+POST http://localhost:3001/api/avatars/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1M2Y5MjMyNzE1M2E3N2IzOWYzZDU2NiIsInVzZXJuYW1lIjoidGVzdGVyIiwiaWF0IjoxNjk4ODQ1NzIzfQ.YA6XfJ8NPSXwfrveTLdJvnJeT0BKFqDlqaW6ppkjlBE
+
+{
+    "image": "",
+    "name": "Teacher",
+    "career": "Educación Primaria",
+    "specialty": "Pedagogía Terapéutica",
+    "level": 1,
+    "exp": 0
+}
+
+###
+
+POST http://localhost:3001/api/avatars
+Content-Type: application/json
+
+{
+    "level": 1,
+    "exp": 0
+}
+
+###
+
+POST http://localhost:3001/api/avatars/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NDI1YmVmMTIzMDE4MmUwNWFkMTI2YSIsInVzZXJuYW1lIjoidGVzdGVyMDIiLCJpYXQiOjE2OTg4NTAwNjEsImV4cCI6MTY5OTQ1NDg2MX0.ivzeVwHWDAptqLXTH-TNI4GqpGoq5-O7BHvKqiKSc4g
+
+{
+    "image": "",
+    "name": "Medic",
+    "career": "Medicina",
+    "specialty": "Cardiopatía"
+}

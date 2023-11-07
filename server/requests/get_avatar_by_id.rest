@@ -1,0 +1,6 @@
+GET http://localhost:3001/api/avatars/653a4c8bd53397a8cb9ca155
+Content-Type: application/json
+
+{
+    "_id": "653a4c8bd53397a8cb9ca155"
+}

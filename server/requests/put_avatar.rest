@@ -1,0 +1,19 @@
+PUT  http://localhost:3001/api/avatars/653e2094ab1c8323e123a462
+Content-Type: application/json
+
+{
+    "name": "Medic",
+    "career": "Medicina",
+    "specialty": "Cardiología",
+    "level": 1,
+    "exp": 0
+}
+
+###
+
+PUT http://localhost:3001/api/avatars/653e2094ab1c8323e123a462
+Content-Type: application/json
+
+{
+    "career": "Educación Primaria"
+}

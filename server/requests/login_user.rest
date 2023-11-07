@@ -1,0 +1,30 @@
+POST http://localhost:3001/api/login/
+Content-Type: application/json
+
+{
+    "email": "tester@gmail.com",
+    "username": "tester",
+    "password": "12test"
+}
+
+###
+
+POST http://localhost:3001/api/login/
+Content-Type: application/json
+
+{
+    "email": "tester@gmail.com",
+    "username": "tester",
+    "password": "incorrectPwd"
+}
+
+###
+
+POST http://localhost:3001/api/login/
+Content-Type: application/json
+
+{
+    "email": "tester2@gmail.com",
+    "username": "tester02",
+    "password": "12test"
+}
