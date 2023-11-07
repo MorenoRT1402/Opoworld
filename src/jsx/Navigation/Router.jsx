@@ -1,9 +1,10 @@
 import { Children, useEffect, useState } from 'react'
-import { EVENTS } from '../../js/constants'
+import { EVENTS } from '../../constants'
 import { match } from 'path-to-regexp'
+import NotFound from '../Pages/NotFound'
 
 // eslint-disable-next-line react/prop-types
-export function Router ({children, routes = [], defaultComponent: DefaultComponent = () => <h1>404</h1> }) {
+export function Router ({children, routes = [], defaultComponent: DefaultComponent = NotFound }) {
     const [currentPath, setCurrentPath] = useState(window.location.pathname)
   
     useEffect(() => {
