@@ -2,11 +2,9 @@ import React, { useState } from "react";
 import "../../css/customPage.css";
 import AvatarCreation from "../Components/AvatarCreation";
 import { Link } from "../Navigation/Link";
-import connectionToDB from "../../js/connection.js";
 
 export default function RegisterScreen() {
-
-  connectionToDB()
+  console.log('alo')
 
   const [userData, setUserData] = useState({
     email: "",

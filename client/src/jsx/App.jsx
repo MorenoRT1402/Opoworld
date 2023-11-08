@@ -1,42 +1,32 @@
-import { Suspense, lazy } from 'react'
+import { lazy } from 'react'
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 
 import '../css/App.css'
-/*
-import { Router } from './Navigation/Router.jsx'
-import { Route } from './Navigation/Route.jsx'
-import SearchPage from './Pages/SearchPage.jsx'
-import NotFound from './Pages/NotFound'
-*/
-const LoginPage = lazy(() => import('./Pages/LoginScreen.jsx'))
-/*
-const RegisterPage = lazy(() => import('./Pages/RegisterScreen.jsx'))
+
 const HomePage = lazy(() => import('./Pages/HomeScreen.jsx'))
-*/
-/*
-const appRoutes = [
-  {
-    path: '/search/:query',
-    Component: SearchPage
-  }
-]
-*/
+const LoginPage = lazy(() => import('./Pages/LoginScreen.jsx'))
+const RegisterPage = lazy(() => import('./Pages/RegisterScreen.jsx'))
 
 function App() {
+  console.log('ey')
   return (
     <main>
-      <Suspense fallback={<div>Loading...</div>}>
-        <LoginPage/>
-      </Suspense>
+      <BrowserRouter>
+        <Link to='/'>Home</Link>
+        <Link to='/login'>Login</Link>
+        <Link to='/register'>Register</Link>
+        <Link to='/avatars'>Avatars</Link>
+        <Link to='/users'>Users</Link>
+        <Routes>
+          <Route path='/' element={<HomePage />} />
+          <Route path='/login' element={<LoginPage />} />
+          <Route path='/register' element={<RegisterPage />} />
+          <Route path='/avatars' element={<h1>Avatars</h1> } />
+          <Route path='/users' element={<h1>Users</h1>} />
+        </Routes>
+      </BrowserRouter>
     </main>
   )
 }
 
 export default App
-
-/*
-      <Router routes = {appRoutes} defaultComponent={<NotFound/>}>
-        <Route path='/' Component={LoginPage} />
-        <Route path='/register' Component={RegisterPage} />
-        <Route path='/home' Component={HomePage} />
-      </Router>
-      */

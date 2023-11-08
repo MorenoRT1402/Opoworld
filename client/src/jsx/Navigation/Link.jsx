@@ -1,4 +1,4 @@
-import { BUTTONS, EVENTS } from '../../js/constants'
+import { BUTTONS, EVENTS } from '../../constants'
 
 // eslint-disable-next-line react/prop-types
 export function Link ({ button, onClick = () => {}, target, to, ...props}){
