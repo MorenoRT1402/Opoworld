@@ -1,15 +1,15 @@
-import './../../css/customPage.css'
+import { useNavigate } from 'react-router-dom';
 
 export default function AvatarView() {
+    const navigate = useNavigate()
+
 
     const getAttributes = () => {
         const attributes = [
-            { key: 'Generalista', value: 1 },
-            { key: 'Educación Física', value: 1 },
-            { key: 'Pedagogía Terapéutica', value: 1 },
-            { key: 'Audición y Lenguaje', value: 1 },
-            { key: 'Música', value: 1 },
-            { key: 'Inglés', value: 1 }
+            { key: 'Temario', value: 1 },
+            { key: 'Supuestos Prácticos', value: 1 },
+            { key: 'Programación', value: 1 },
+            { key: 'Práctico Común', value: 1 },
         ];
       
         return attributes.map((item) => (
@@ -18,6 +18,15 @@ export default function AvatarView() {
             {`${item.value}`}
           </div>
         ));
+      }
+
+      const editButton = () => {
+        const avatarID = null
+        return (
+            <button onClick={navigate(`/avatar/edit/${avatarID}`)}>
+                Editar
+            </button>
+        )
       }
       
 
@@ -53,7 +62,7 @@ export default function AvatarView() {
                                 {getAttributes()}
                             </div>
                         </div>
-            <button>Editar</button>
+            <button onClick={editButton}>Editar</button>
         </div>
     )
 }

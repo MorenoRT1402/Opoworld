@@ -2,28 +2,42 @@
 import { useState, useEffect } from "react";
 import SelectCarrer from './SelectCareer';
 import SelectSpecialty from './SelectSpecialty';
+import { useParams } from "react-router-dom";
+import { useField } from "../../Hooks/useField";
 
 export default function AvatarCreation (avatarData, onAvatarDataChange) {
-    const [selectedCareer, setSelectedCareer] = useState("Educación Primaria");
-
-    const handleImageChange = (event) => {
-      const newAvatarData = { ...avatarData, image: event.target.value };
-      onAvatarDataChange(newAvatarData);
-    };
-    
-    const handleNameChange = (event) => {
-      const newAvatarData = { ...avatarData, name: event.target.value };
-      avatarData.onAvatarDataChange(newAvatarData);
-    }
+  const { id } = useParams()
+  console.log(id)
+  const [selectedCareer, setSelectedCareer] = useState("Educación Primaria");
 
     useEffect(() => {
         }, [selectedCareer]);
 
+    const saveButton = () => {
+      return (
+        <button>
+          Guardar
+        </button>
+      )
+    }
+
+    const image = useField({ type : 'file' })
+    const name = useField({ type : 'text' })
+
     return (
-        <div className='grid-vertical'>
-        <input className="avatarInput-Image" onChange={handleImageChange} type="file" name="avatar" placeholder="avatar" accept="image/*"/>
-        <input className='avatarInput-Name' onChange={handleNameChange} type='text' name='avatarName' placeholder='Nombre'/>
-        <div><SelectCarrer
+        <div className='grid vertical'>
+        <input className="avatarInput-Image" 
+        {...image}
+        name="avatar" 
+        placeholder="avatar" 
+        accept="image/*"/>
+        <input className='text-center' 
+        {...name}
+        type='text' 
+        name='avatarName' 
+        placeholder='Nombre'/>
+        <div className="grid horizontal margin">
+          <SelectCarrer
         avatarData={avatarData}
         onAvatarDataChange={onAvatarDataChange}
           selectedCareer={selectedCareer}
@@ -35,6 +49,7 @@ export default function AvatarCreation (avatarData, onAvatarDataChange) {
         onAvatarDataChange={onAvatarDataChange}
          />
         </div>
+        { id ? saveButton() : null }
         </div>
     )
 }

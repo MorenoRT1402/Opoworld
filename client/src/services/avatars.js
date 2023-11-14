@@ -8,29 +8,31 @@ const setToken = newToken => {
     token = `Bearer ${newToken}`
 }
 
+const config = {
+    headers: {
+        Authorization: token
+    }
+}
+
 const getAll = () => {
     const request = axios.get(baseUrl)
     return request.then(response => response.data)
 }
 
+const get = (id) => {
+    const url = `${baseUrl}${id}`
+    const request = axios.get(url)
+    return request.then(response => response.data)
+}
+
 const create = (newObject) => {
-    const config = {
-        headers: {
-            Authorization: token
-        }
-    }
     const request = axios.post(baseUrl, newObject, config)
     return request.then(response => response.data)
 }
 
 const update = (id, newObject) => {
-    const config = {
-        headers: {
-            Authorization: token
-        }
-    }
-    const request = axios.put(`${baseUrl}/${id}`, newObject, config)
+    const request = axios.put(`${baseUrl}${id}`, newObject, config)
     return request.then(response => response.data)
 }
 
-export default { getAll, create, update }
+export default { setToken, getAll, get, create, update }

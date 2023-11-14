@@ -4,3 +4,12 @@ Content-Type: application/json
 {
     "_id": "653a4c8bd53397a8cb9ca155"
 }
+
+###
+
+GET http://localhost:3001/api/avatars/6540c19d8e782dc72b2a0af1
+Content-Type: application/json
+
+{
+    "_id": "6540c19d8e782dc72b2a0af1"
+}

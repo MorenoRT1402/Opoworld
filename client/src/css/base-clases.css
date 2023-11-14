@@ -1,0 +1,67 @@
+@import url('theme.css');
+
+form {
+    display: grid;
+    grid-gap: 10px;
+  }
+
+input {
+    padding: 10px;
+    border: 1px solid var(--input-border-color);
+    border-radius: 5px;
+    font-size: 1rem;
+  }
+
+button, .button {
+  text-align: center;
+    padding: 20px 20px;
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  
+button:hover, .button:hover {
+    background-color: var(--button-hover-bg-color);
+  }
+
+  .margin {
+    margin: 5px;
+  }
+
+.gap {
+    gap: 10px;
+  }
+
+.grid {
+    display: grid;
+}
+
+.horizontal {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+}
+
+.vertical {
+    grid-template-rows: repeat(auto-fit, minmax(50px, 1fr));
+}
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hcenter {
+    display: flex;
+    justify-content: center;
+}
+
+.vcenter {
+    display: flex;
+    align-items: center;
+}
+
+.text-center {
+  text-align: center;
+}

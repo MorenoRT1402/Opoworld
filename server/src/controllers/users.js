@@ -3,17 +3,28 @@ const usersRouter = require('express').Router()
 const User = require('../DB_Connection/DAO/UserDAO')
 const { request, response } = require('express')
 
+const schema = 'avatars'
+
+const populateObj = {
+    image: 1,
+    name: 1,
+    career: 1,
+    specialty: 1,
+    level: 1,
+    exp: 1,
+    attributes: 1,
+}
+
 usersRouter.get('/', async (request, response) => {
-    const users = await User.find({}).populate('avatars', {
-        image: 1,
-        name: 1,
-        career: 1,
-        specialty: 1,
-        level: 1,
-        exp: 1,
-        attributes: 1,
-    })
+    const users = await User.find({}).populate( schema, populateObj)
     response.json(users)
+})
+
+usersRouter.get('/:id', async (request, response) => {
+    const { id } = request.params
+    console.log(id)
+    const user = await User.findById(id).populate( schema, populateObj)
+    response.json(user)
 })
 
 usersRouter.post('/', async (request, response) => {

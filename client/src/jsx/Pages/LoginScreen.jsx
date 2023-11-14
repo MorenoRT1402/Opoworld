@@ -1,48 +1,31 @@
-import React, { useEffect, useState } from "react";
-import "./../../css/customPage.css";
-import loginService from "../../services/login";
-import avatarService from "../../services/avatars"
+import React, { useContext } from "react";
+import { useField } from "../../Hooks/useField";
+import { Link, useNavigate } from 'react-router-dom'
+import { LoggedUserContext } from "../../context/LoggedUserContext";
+import { PATHS } from "../../constants";
 //import { Link } from "../Navigation/Link";
 
 export default function LoginScreen() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [user, setUser] = useState(null)
+const navigate = useNavigate()
+const email = useField({ type: 'text' })
+const password = useField({ type: 'password' })  
+const { login } = useContext(LoggedUserContext);
 
-  useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedOpoUser')
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      avatarService.setToken(user.token)
-    }
-  }, [])
-
-  const loginUserWithParams = (ev) => {
+  const loginUserWithParams = async (ev) => {
     ev.preventDefault();
 
-    loginService
-      .login({ email:email, password:password })
-      .then((user) => {
-
-        window.localStorage.setItem(
-          'loggedOpoUser', JSON.stringify(user)
-        )
-        avatarService.setToken(user.token)
-        setUser(user);
-        setEmail("");
-        setPassword("");
-      })
-      .catch((error) => {
-        console.log("Wrong credentials");
-        console.error(error.message)
-      });
-
-    console.log(`Loging with ${email} ${password}`);
+    try {
+    await login({ email:email.value, password:password.value })
+      navigate('/home')
+  } catch (error) {
+    console.log("Wrong credentials");
+    console.error(error.message)
+  }
   };
 
   return (
     <React.Fragment>
+      <main>
       <strong className="title">OpoWorld</strong>
       <form
         onSubmit={(ev) => {
@@ -50,25 +33,26 @@ export default function LoginScreen() {
         }}
       >
         <input
-          type="text"
           name="email"
           placeholder="Email"
-          value={email}
-          onChange={(ev) => setEmail(ev.target.value)}
+          {...email}
         />
         <input
-          type="password"
           name="password"
           placeholder="Password"
-          value={password}
-          onChange={(ev) => setPassword(ev.target.value)}
+          {...password}
         />
         <button>
           Iniciar sesión
         </button>
-        <p>o también puedes</p>
-        <a href="">Registrate</a>
+        <div className="grid horizontal" style={{ minWidth: "140px" }}>
+          <p>o también puedes</p>
+          <Link to={PATHS.REGISTER} className="hcenter vcenter">
+            Registrarte
+          </Link>
+        </div>
       </form>
+      </main>
     </React.Fragment>
   );
 }

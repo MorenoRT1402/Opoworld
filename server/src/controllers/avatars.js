@@ -4,19 +4,27 @@ const User = require('../DB_Connection/DAO/UserDAO')
 
 const userExtractor = require('../DB_Connection/middlewares/userExtractor')
 
+const schema = 'user'
+const populateObj = {
+    passwordHas: 0,
+    avatars: 0,
+}
+
 avatarsRouter.get('/', async (request, response) => {
-    const avatars = await Avatar.find({}).populate('user', {
-        passwordHas: 0,
-        avatars: 0,
-    })
+    const avatars = await Avatar.find({}).populate( schema, populateObj)
     response.json(avatars)
 })
 
+/*
 avatarsRouter.get('/:id', (request, response, next) => {
     const { id } = request.params
 
+    console.log(request.url)
+    console.log({ id })
+
     Avatar.findByID(id).then(avatar => {
         if (avatar) {
+            console.log({avatar})
             return response.json(avatar)
         } else {
             response.status(404).end()
@@ -24,6 +32,14 @@ avatarsRouter.get('/:id', (request, response, next) => {
     }).catch(err => {
         next(err)
     })
+})
+*/
+
+avatarsRouter.get('/:id', async (request, response) => {
+    const { id } = request.params
+    console.log(id)
+    const avatar = await Avatar.findById(id).populate( schema, populateObj)
+    response.json(avatar)
 })
 
 avatarsRouter.put('/:id', userExtractor, (request, response, next) => {
@@ -34,51 +50,10 @@ avatarsRouter.put('/:id', userExtractor, (request, response, next) => {
         delete avatarUpdates._id;
     }
 
-    /*
-    const newAvatarInfo = new Avatar({
-  //    image: avatar.image,
-      name: avatar.name,
-      career: avatar.career,
-      specialty: avatar.specialty,
-      level: avatar.level,
-      exp: avatar.exp,
-      attributes: avatar.attributes
-    })
-    */
-
     Avatar.findByIdAndUpdate(id, avatar, { new: true }).then(result => {
         response.json(result)
     }).catch(next)
 })
-
-/*
-avatarsRouter.put('//:id', (request, response, next) => {
-  const { id } = request.params;
-  const avatarUpdates = request.body; // Datos a actualizar
- 
-  // Verifica si el campo '_id' está presente en las actualizaciones y, si lo está, elimínalo
-  if (avatarUpdates._id) {
-    delete avatarUpdates._id;
-  }
- 
-  // Utiliza el método 'findOneAndUpdate' para actualizar el documento sin afectar el campo '_id'
-  Avatar.findOneAndUpdate(
-    { _id: id },
-    { $set: avatarUpdates },
-    { new: true }
-  )
-    .then((result) => {
-      if (result) {
-        response.json(result);
-      } else {
-        response.status(404).end();
-      }
-    })
-    .catch((err) => {
-      next(err);
-    });
-});
-*/
 
 avatarsRouter.delete('/:id',  userExtractor, (request, response, next) => {
     const { id } = request.params
@@ -126,7 +101,6 @@ avatarsRouter.post('/', userExtractor, async (request, response) => {
     })
 
     try {
-        console.log(user.avatars)
         const savedAvatar = await avatarToRegister.save()
         user.avatars = user.avatars.concat(savedAvatar._id)
         await user.save()
@@ -136,19 +110,6 @@ avatarsRouter.post('/', userExtractor, async (request, response) => {
     }
 
     response.json(avatarToRegister)
-
-    /*
-  
-    avatarToRegister.save().then(result => {
-        console.log(result)
-        mongoose.connection.close()
-    }).catch(err => {
-        console.log(err)
-    })
-  
-    */
-
-    //  avatars = [...avatars, newAvatar]
 
 })
 

@@ -1,16 +1,41 @@
 body{
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
+    height: auto;
     font-family: Arial, sans-serif;
+    background-color: #535bf2;
+    color: #ffffff;
 }
 
 .title {
     color: #e1c316;
     font-size: 6rem;
     margin-bottom: 20px;
+  }
+
+  header {
+    display: flex;
+    width: auto;
+    background-color: #e1c316;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+  }
+
+  .left {
+    display: flex;
+    align-items: start;
+  }
+
+  .center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .right {
+    display: flex;
+    align-items: end;
   }
   
   form {
@@ -49,7 +74,7 @@ body{
   .grid-auto {
     display: grid;
     grid-auto-flow: row dense;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     width: 100%;
     justify-content: center;
     align-items: center;
@@ -131,6 +156,25 @@ body{
     max-height: 100%;
   }
   
+  .logout-container {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+  
+  .logout-button {
+    padding: 10px;
+    color: #333;
+    background-color: #ffdb58;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  
+  .logout-button:hover {
+    background-color: #e1c316;
+  }
   
 
   .backToLogin {

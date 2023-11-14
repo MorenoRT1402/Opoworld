@@ -32,7 +32,8 @@ loginRouter.post('/', async (request, response) => {
         response.send({
             email: user.email,
             username: user.username,
-            token: token
+            token: token,
+            avatars: user.avatars
         })
     } catch (error) {
         console.log(error.message)

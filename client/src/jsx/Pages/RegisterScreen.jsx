@@ -1,16 +1,12 @@
+import '../../css/components.css'
+
 import React, { useState } from "react";
-import "../../css/customPage.css";
 import AvatarCreation from "../Components/AvatarCreation";
-import { Link } from "../Navigation/Link";
+import { PATHS } from "../../constants";
+import { Link } from "react-router-dom";
+import { useField } from "../../Hooks/useField";
 
 export default function RegisterScreen() {
-  console.log('alo')
-
-  const [userData, setUserData] = useState({
-    email: "",
-    username: "",
-    password: ""
-  })
 
   const [avatarData, setAvatarData] = useState({
     userID: "",
@@ -27,41 +23,47 @@ export default function RegisterScreen() {
   const handleRegisterUser = (event) => {
     event.preventDefault();
   };
+
+  const usernameInput = useField({ type: 'text' })
+  const emailInput = useField({ type: 'text' })  
+  const passwordInput = useField({ type: 'password' })
   
   return (
     <React.Fragment>
-      <strong className="title">Registro</strong>
+      <strong className="title hcenter">Registro</strong>
+      <div className="center">
       <form onSubmit={(ev) => ev.preventDefault()}>
+        <div className="grid vertical gap">
         <input
-          type="text"
           name="username"
           placeholder="Usuario"
-          value={userData.username}
-          onChange={(e) => setUserData({ ...userData, username: e.target.value })}
+          {...usernameInput}
         />
         <input
           type="text"
           name="email"
           placeholder="Email"
-          value={userData.email}
-          onChange={(e) => setUserData({ ...userData, email: e.target.value })}
+          {...emailInput}
         />
         <input
-          type="password"
           name="password"
           placeholder="Password"
-          value={userData.password}
-          onChange={(e) => setUserData({ ...userData, password: e.target.value })}
+          {...passwordInput}
         />
+        </div>
+        <div>
         <h2>Creación de Avatar</h2>
         <AvatarCreation
           avatarData={avatarData}
           onAvatarDataChange={updateAvatarData} />
-        <div className="grid-vertical">
-          <Link button onClick={handleRegisterUser}  to="">Hecho</Link>
-          <Link to="/" className='backToLogin'>Volver a Login</Link>
+        <div className="register-buttons grid vertical gap">
+          <Link className="button" to={PATHS.ROOT} onClick={() => handleRegisterUser}>Hecho</Link>
+          <Link className='button' to={PATHS.LOGIN}> Volver al Login </Link>
         </div>
+        </div>
+        
       </form>
+      </div>
     </React.Fragment>
   );
 }

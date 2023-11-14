@@ -1,0 +1,14 @@
+.register-buttons {
+    margin: 50px;
+    justify-content: center;
+    min-width: auto;
+}
+
+.avatarInput-Image {
+    height: 7em;
+    padding: 10px;
+    margin-bottom: 4px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+  }
