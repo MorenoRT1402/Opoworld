@@ -1,30 +1,41 @@
-import { useState, useEffect } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState, useEffect, useContext } from "react";
+import { AvatarContext } from "../../context/AvatarContext";
+import { useField } from "../../Hooks/useField";
 
 /* eslint-disable react/prop-types */
-const SelectSpecialty = ({ avatarData, selectedCareer }) => {
+const SelectSpecialty = () => {
+    const useAvatar = useContext(AvatarContext)
+    const { avatarData, updateAvatarData } = useAvatar
+    const specialty = useField({initialValue : avatarData.specialty})
     const [specialties, setSpecialties] = useState([]);
   
     useEffect(() => {
-      const options = getSpecialtiesForCareer(selectedCareer);
+      const options = getSpecialtiesForCareer(avatarData.career);
       setSpecialties(options);
-    }, [selectedCareer]);
+    }, [avatarData.career]);
 
-    const onSpecialtyChange = (event) => {
-      const newAvatarData = { ...avatarData, name: event.target.value };
-      avatarData.onAvatarDataChange(newAvatarData);
-    }
+    useEffect(() => {
+      updateAvatarData({
+        ...avatarData,
+        specialty: specialty.value,
+      })
+    }, [specialty.value])
 
     function getSpecialtiesForCareer(career) {
       const specialtiesByCareer = {
         "Educación Primaria": ["Generalista", "Ed. Física", "Pedagogía Terapéutica", "Inglés"],
         "Medicina": ["Cardiología", "Pediatría", "Cirugía"],
+        "Other": ["Example"]
       };
 
       return specialtiesByCareer[career] || [];
     }
   
     return (
-      <select id="specialty" name="especialidad" onChange={() =>{onSpecialtyChange}}>
+      <select 
+      {...specialty}
+      id="specialty" name="especialidad">
         {specialties.map((option) => (
           <option key={option} value={option}>
             {option}

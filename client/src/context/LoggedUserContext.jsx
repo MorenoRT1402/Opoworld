@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import { createContext, useState, useEffect } from "react";
 import loginService from '../services/login'
+import userService from '../services/users'
 import avatarService from '../services/avatars'
 
 export const LoggedUserContext = createContext()
@@ -10,12 +11,15 @@ export function LoggedUserProvider ({children}) {
     const [ avatar, setAvatar ] = useState(null);
     const USER_STORAGE = 'loggedOpoUser'
 
+//    console.log('render', user, avatar)
+
     const setUserFromLocalStorage = async () => {
         const loggedUserJSON = window.localStorage.getItem(USER_STORAGE);
         if (loggedUserJSON) {
             const userGetted = await JSON.parse(loggedUserJSON);
-            setUser(userGetted)
             avatarService.setToken(userGetted.token);
+            const userUpdated = await userService.get(userGetted.id)
+            setUser(userUpdated)
             setAvatarFromUser(userGetted)
 
             return userGetted
@@ -34,15 +38,15 @@ export function LoggedUserProvider ({children}) {
         }
     }
 
-    /*
     useEffect(() => {
-        console.log('useEffect user update', user)
+        setAvatarFromUser(user)
     }, [user])
-    */
+    
 
         /* eslint-disable react-hooks/exhaustive-deps */
         useEffect(() => {
-            setUserFromLocalStorage();
+            setUserFromLocalStorage()
+
         }, []);
 
     const login = async ({ email, password }) => {
@@ -59,19 +63,22 @@ export function LoggedUserProvider ({children}) {
 
         setUser(user);
 
-        console.log('sasas', user)
-
-        console.log(user, user.token, avatar)
     }
 
     const logout = () => {
         setUser(null)
         avatarService.setToken(null)
+        setAvatar(null)
         window.localStorage.removeItem(USER_STORAGE)
     }
 
+    const newAvatar = (newAvatar, id) => {
+        console.log({id, newAvatar, user})
+        id ? avatarService.update(newAvatar, id) : avatarService.create({newAvatar})
+    }
+
     return (
-        <LoggedUserContext.Provider value={{ user, avatar, login, logout }}>
+        <LoggedUserContext.Provider value={{ user, avatar, login, logout, newAvatar }}>
           {children}
         </LoggedUserContext.Provider>
       );

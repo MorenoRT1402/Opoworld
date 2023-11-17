@@ -1,3 +1,18 @@
+.avatar-atributes-columns {
+    display: grid;
+    grid-auto-flow: row dense;
+    grid-template-columns: repeat(4, 1fr);
+    width: 100%;
+  }
+
+  .grid-horizontal-d2 {
+    display: grid;
+    grid-auto-flow: row dense;
+    grid-template-columns: repeat(2, 1fr);
+    width: 100%;
+    align-items: center;
+  }
+
 .register-buttons {
     margin: 50px;
     justify-content: center;
@@ -11,4 +26,10 @@
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 1rem;
+
+  }
+
+  .avatar-grid-horizontal{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
   }

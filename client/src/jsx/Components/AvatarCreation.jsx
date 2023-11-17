@@ -1,55 +1,79 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
-import { useState, useEffect } from "react";
-import SelectCarrer from './SelectCareer';
-import SelectSpecialty from './SelectSpecialty';
+import React, { useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useField } from "../../Hooks/useField";
+import { AvatarContext } from "../../context/AvatarContext";
+import avatarService from "../../services/avatars";
+import SaveButton from "./SaveButton";
+import SelectCarrer from './SelectCareer';
+import SelectSpecialty from './SelectSpecialty';
 
-export default function AvatarCreation (avatarData, onAvatarDataChange) {
+export default function AvatarCreation () {
   const { id } = useParams()
-  console.log(id)
-  const [selectedCareer, setSelectedCareer] = useState("Educación Primaria");
+  const { avatarData, updateAvatarData } = useContext(AvatarContext)
 
-    useEffect(() => {
-        }, [selectedCareer]);
+  const name = useField({ type : 'text' })
 
-    const saveButton = () => {
-      return (
-        <button>
-          Guardar
-        </button>
-      )
+      const updateForm = () => {
+        console.log(avatarData)
+        name.modValue(avatarData.name)
     }
 
-    const image = useField({ type : 'file' })
-    const name = useField({ type : 'text' })
+  useEffect(() => {
+    if(!id) return
+    async function getAvatar() {
+      try {
+        const avatarGetted = await avatarService.get(id);
+        await updateAvatarData({...avatarGetted});
+        updateForm()
+      } catch (error) {
+        console.error('error getting avatar')
+      }
+    }
+    getAvatar();
+  }, []);
+  
+
+    useEffect(() => {
+      updateAvatarData({
+        name: name.value,
+      })
+    }, [name.value])
+
+    const onImageChange = (ev) => {
+      const selectedFile = ev.target.files[0];
+      const formData = new FormData();
+      formData.append('avatarImage', selectedFile);
+      
+      updateAvatarData({ image : selectedFile })
+    }
+    
 
     return (
-        <div className='grid vertical'>
-        <input className="avatarInput-Image" 
-        {...image}
-        name="avatar" 
-        placeholder="avatar" 
-        accept="image/*"/>
-        <input className='text-center' 
-        {...name}
-        type='text' 
-        name='avatarName' 
-        placeholder='Nombre'/>
-        <div className="grid horizontal margin">
-          <SelectCarrer
-        avatarData={avatarData}
-        onAvatarDataChange={onAvatarDataChange}
-          selectedCareer={selectedCareer}
-          setSelectedCareer={setSelectedCareer}
-        />
-        <SelectSpecialty 
-        selectedCareer={selectedCareer}
-        avatarData={avatarData}
-        onAvatarDataChange={onAvatarDataChange}
-         />
-        </div>
-        { id ? saveButton() : null }
-        </div>
+      <React.Fragment>
+        <header>
+          <h1 style={{width: "100%"}} className="center">Creación de Avatar</h1>
+        </header>
+  <main className='grid vertical'>
+    <div className="grid vertical gap">
+    <input className="avatarInput-Image" 
+  name="avatar" 
+  placeholder="avatar" 
+  type="file"
+  accept="image/*"
+  onChange={onImageChange}/>
+  <input className='text-center' 
+  {...name}
+  name='avatarName' 
+  placeholder='Nombre'/>
+  <div className="center margin">
+    <SelectCarrer/>
+    <SelectSpecialty />
+  </div>
+    </div>
+  <SaveButton id={id}/>
+  </main>
+      </React.Fragment>
     )
 }

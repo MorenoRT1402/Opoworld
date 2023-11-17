@@ -3,13 +3,15 @@ import { useField } from "../../Hooks/useField";
 import { Link, useNavigate } from 'react-router-dom'
 import { LoggedUserContext } from "../../context/LoggedUserContext";
 import { PATHS } from "../../constants";
+import { useRedirect } from "../../Hooks/useRedirect";
 //import { Link } from "../Navigation/Link";
 
 export default function LoginScreen() {
-const navigate = useNavigate()
-const email = useField({ type: 'text' })
-const password = useField({ type: 'password' })  
-const { login } = useContext(LoggedUserContext);
+  const navigate = useNavigate()
+  const email = useField({ type: 'text' })
+  const password = useField({ type: 'password' })  
+  const { login } = useContext(LoggedUserContext);
+  useRedirect()
 
   const loginUserWithParams = async (ev) => {
     ev.preventDefault();

@@ -3,10 +3,12 @@ import { BrowserRouter, Routes, Route, /*Link,*/ redirect } from 'react-router-d
 
 import '../css/app.css';
 import '../css/base-clases.css'
+import '../css/components.css'
 
 import { PATHS } from '../constants';
 import AvatarCreation from './Components/AvatarCreation';
 import { LoggedUserContext } from '../context/LoggedUserContext';
+import { AvatarProvider } from '../context/AvatarContext';
 
 const HomePage = lazy(() => import('./Pages/HomeScreen.jsx'));
 const LoginPage = lazy(() => import('./Pages/LoginScreen.jsx'));
@@ -22,9 +24,10 @@ function App() {
   */
 
   const redirectIfLogged = (route) => {
-    return user ? redirect({route}) : redirect('/login')
+    return user!=null ? redirect({route}) : redirect('/login')
   }
   return (
+    <AvatarProvider>
       <BrowserRouter>
         <Suspense fallback={<div>Loading...</div>}>
           <Routes>
@@ -32,13 +35,14 @@ function App() {
             <Route path={PATHS.HOME} render={redirectIfLogged('/home')} element={<HomePage />} />
             <Route path={PATHS.LOGIN} element={<LoginPage />} />
             <Route path={PATHS.REGISTER} element={<RegisterPage />} />
-            <Route path={PATHS.AVATAR_EDIT} element={<AvatarCreation/>} />
+            <Route path={`${PATHS.AVATAR_EDIT}/:id?`} element={<AvatarCreation />} />
             <Route path='/avatars' element={<h1>Avatars</h1>} />
             <Route path='/users' element={<h1>Users</h1>} />
             <Route path='*' element={<h1>Not Found</h1>}/>
           </Routes>
         </Suspense>
       </BrowserRouter>
+    </AvatarProvider>
   );
 }
 

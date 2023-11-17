@@ -2,7 +2,9 @@ const avatarsRouter = require('express').Router()
 const Avatar = require('../DB_Connection/DAO/AvatarDAO')
 const User = require('../DB_Connection/DAO/UserDAO')
 
-const userExtractor = require('../DB_Connection/middlewares/userExtractor')
+const { uploadFile, saveImage, getImage, clearImageDir } = require('../imgStorage');
+
+const userExtractor = require('../DB_Connection/middlewares/userExtractor');
 
 const schema = 'user'
 const populateObj = {
@@ -37,37 +39,49 @@ avatarsRouter.get('/:id', (request, response, next) => {
 
 avatarsRouter.get('/:id', async (request, response) => {
     const { id } = request.params
-    console.log(id)
     const avatar = await Avatar.findById(id).populate( schema, populateObj)
+//    avatar.image = avatar.image !== '' ? getImage(avatar.image) : ''
     response.json(avatar)
 })
 
-avatarsRouter.put('/:id', userExtractor, (request, response, next) => {
-    const { id } = request.params
-    const avatar = request.body
+avatarsRouter.put('/:id', userExtractor, uploadFile, async (request, response, next) => {
+    try {
+        const { id } = request.params;
+        const avatarUpdates = request.body;
+        const fileImage = request.file;
 
-    if (avatar._id) {
-        delete avatarUpdates._id;
+        console.log('put', {avatarUpdates}, {fileImage})
+
+        if (avatarUpdates._id) {
+            delete avatarUpdates._id;
+        }
+
+        clearImageDir()
+
+        if (fileImage) {
+            avatarUpdates.image = saveImage(fileImage);
+        }
+
+        const avatarToRegister = new Avatar({
+            ...avatarUpdates,
+            user : avatarUpdates.user.id
+        })
+
+        const updatedAvatar = await Avatar.findByIdAndUpdate(id, avatarToRegister, { new: true });
+        
+        if (updatedAvatar) {
+            response.json(updatedAvatar);
+        } else {
+            response.status(404).end();
+        }
+    } catch (error) {
+        next(error);
     }
+});
 
-    Avatar.findByIdAndUpdate(id, avatar, { new: true }).then(result => {
-        response.json(result)
-    }).catch(next)
-})
 
-avatarsRouter.delete('/:id',  userExtractor, (request, response, next) => {
-    const { id } = request.params
-
-    Avatar.findByIdAndRemove(id).then(result => {
-        response.status(204).end()
-    }).catch(error => next(error))
-
-    response.status(204).end()
-})
-
-avatarsRouter.post('/', userExtractor, async (request, response) => {
+avatarsRouter.post('/', userExtractor, uploadFile, async (request, response, next) => {
     const {
-        image,
         name,
         career,
         specialty,
@@ -76,12 +90,11 @@ avatarsRouter.post('/', userExtractor, async (request, response) => {
         attributes,
     } = request.body
 
+    const fileImage = request.file
+
     const { userId } = request
-    console.log(userId)
 
     const user = await User.findById(userId)
-
-    console.log( { user } )
 
     if ( !name || !career || !specialty) {
         return response.status(400).json({
@@ -90,8 +103,8 @@ avatarsRouter.post('/', userExtractor, async (request, response) => {
     }
 
     const avatarToRegister = new Avatar({
-        image,
-        name,
+        image : fileImage,
+        name: name,
         career,
         specialty,
         level,
@@ -101,6 +114,9 @@ avatarsRouter.post('/', userExtractor, async (request, response) => {
     })
 
     try {
+        const newPath = saveImage(fileImage)
+        await clearImageDir()
+        avatarToRegister.image = newPath
         const savedAvatar = await avatarToRegister.save()
         user.avatars = user.avatars.concat(savedAvatar._id)
         await user.save()
@@ -108,9 +124,22 @@ avatarsRouter.post('/', userExtractor, async (request, response) => {
     } catch (error) {
         next(error)
     }
+})
 
-    response.json(avatarToRegister)
+avatarsRouter.post('/image/upload', uploadFile, (request, response) =>{
+    const file = request.file
+    saveImage(file)
+    response.status(200).end()
+  })
 
+avatarsRouter.delete('/:id',  userExtractor, (request, response, next) => {
+    const { id } = request.params
+
+    Avatar.findByIdAndRemove(id).then(result => {
+        response.status(204).end()
+    }).catch(error => next(error))
+
+    response.status(204).end()
 })
 
 module.exports = avatarsRouter

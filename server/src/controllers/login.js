@@ -33,8 +33,10 @@ loginRouter.post('/', async (request, response) => {
             email: user.email,
             username: user.username,
             token: token,
-            avatars: user.avatars
+            avatars: user.avatars,
+            id: user.id
         })
+
     } catch (error) {
         console.log(error.message)
     }

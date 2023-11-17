@@ -14,11 +14,14 @@ const usersRouter = require('./controllers/users');
 const avatarsRouter = require('./controllers/avatars');
 const loginRouter = require('./controllers/login')
 
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+
+const PUBLIC_IMAGES = 'src/public'
 
 app.use(cors())
 app.use(express.json())
 
+app.use(express.static(PUBLIC_IMAGES))
 
 Sentry.init({
   dsn: 'https://96044a6b17966243ae74d93d3fd7fd3d@o4506133079195648.ingest.sentry.io/4506133089550336',
@@ -50,6 +53,19 @@ app.use(Sentry.Handlers.tracingHandler());
 app.get('/', (request, response) => {
   response.send('<h1>Hello World</h1>')
 })
+
+/*
+app.get('/static-path', (req, res) => {
+  res.send('Ruta de archivos estáticos: ' + PUBLIC_IMAGES);
+});
+
+app.get('/static-path/:name', (req, res) => {
+  const dir = PUBLIC_IMAGES
+  const name = req.params.name
+  const completePath = `/${name}`
+  res.send(`<img src="${completePath}"></img> `);
+});
+*/
 
 app.use('/api/avatars', avatarsRouter)
 app.use('/api/users', usersRouter)
