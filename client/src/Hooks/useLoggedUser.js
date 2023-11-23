@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import avatarService from '../services/avatars';
 import loginService from '../services/login'
+import bdConfig from '../services/bdConfig';
 
 export const useLoggedUser = () => {
     const [user, setUser] = useState(() => null);
@@ -9,12 +10,14 @@ export const useLoggedUser = () => {
     const USER_STORAGE = 'loggedOpoUser'
     //    const AVATAR_IN_USE = 'avatarInUser'
 
+    const setToken = token => bdConfig.setToken(token)
+
     const setUserFromLocalStorage = async () => {
         const loggedUserJSON = window.localStorage.getItem(USER_STORAGE);
         if (loggedUserJSON) {
             const userGetted = await JSON.parse(loggedUserJSON);
             setUser(userGetted)
-            avatarService.setToken(userGetted.token);
+            setToken(userGetted.token);
             setAvatarFromUser(userGetted)
 
             return userGetted
@@ -54,7 +57,7 @@ export const useLoggedUser = () => {
         window.localStorage.setItem(
             USER_STORAGE, JSON.stringify(user)
         )
-        avatarService.setToken(user.token)
+        setToken(user.token)
 
         setUser(user);
 
@@ -65,7 +68,7 @@ export const useLoggedUser = () => {
 
     const logout = () => {
         setUser(null)
-        avatarService.setToken(null)
+        setToken(null)
         window.localStorage.removeItem(USER_STORAGE)
     }
 

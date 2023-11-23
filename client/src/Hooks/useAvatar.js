@@ -3,7 +3,7 @@ import { useState } from 'react';
 const useAvatar = () => {
   const [avatarData, setAvatarData] = useState({
     userID: "",
-    Image: "",
+    image: "",
     name: "",
     career: "Educación Primaria",
     specialty: "Generalista"
@@ -11,7 +11,7 @@ const useAvatar = () => {
 
   const updateAvatarData = (newAvatarData) => {
     setAvatarData(newAvatarData);
-    console.log({avatarData})
+    console.log('updating avatar', {avatarData})
   };
 
   return { avatarData, updateAvatarData };

@@ -1,9 +1,11 @@
 .avatar-atributes-columns {
-    display: grid;
-    grid-auto-flow: row dense;
-    grid-template-columns: repeat(4, 1fr);
-    width: 100%;
-  }
+  display: grid;
+  grid-auto-flow: row dense;
+  grid-template-columns: repeat(4, 1fr);
+  width: 100%;
+  justify-content: safe;
+  align-items: center;
+}
 
   .grid-horizontal-d2 {
     display: grid;

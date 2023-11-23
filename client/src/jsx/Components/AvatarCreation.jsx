@@ -9,37 +9,58 @@ import SaveButton from "./SaveButton";
 import SelectCarrer from './SelectCareer';
 import SelectSpecialty from './SelectSpecialty';
 
+const ConditionalRenderCareerAndSpecialty = () => {
+  const { avatarData, updateAvatarData } = useContext(AvatarContext)
+
+  const updateSpecialty = specialty => {
+    updateAvatarData({ specialty })
+  }
+
+  const updateCareer = career => {
+    updateAvatarData({ career })
+  }
+
+  if (avatarData.attributes){
+    return (
+      <div className="center margin">
+        <SelectCarrer 
+        initialCareer={avatarData.career} returnCareer={updateCareer}
+        />
+        <SelectSpecialty 
+        career={avatarData.career} initialSpeciality={avatarData.specialty} returnSpecialty={updateSpecialty} 
+        />
+      </div>
+    )
+  }
+}
+
 export default function AvatarCreation () {
   const { id } = useParams()
   const { avatarData, updateAvatarData } = useContext(AvatarContext)
 
-  const name = useField({ type : 'text' })
-
-      const updateForm = () => {
-        console.log(avatarData)
-        name.modValue(avatarData.name)
-    }
+  const name = useField({ type : 'text', initialValue : avatarData.name })
 
   useEffect(() => {
     if(!id) return
-    async function getAvatar() {
-      try {
-        const avatarGetted = await avatarService.get(id);
-        await updateAvatarData({...avatarGetted});
-        updateForm()
-      } catch (error) {
-        console.error('error getting avatar')
-      }
-    }
     getAvatar();
   }, []);
   
 
     useEffect(() => {
+      if(avatarData.name !== name.value)
       updateAvatarData({
         name: name.value,
       })
     }, [name.value])
+
+    async function getAvatar() {
+      try {
+        const avatarGetted = await avatarService.get(id);
+        await updateAvatarData({...avatarGetted});
+      } catch (error) {
+        console.error('error getting avatar')
+      }
+    }
 
     const onImageChange = (ev) => {
       const selectedFile = ev.target.files[0];
@@ -48,6 +69,12 @@ export default function AvatarCreation () {
       
       updateAvatarData({ image : selectedFile })
     }
+
+    const correctAvatar = () => {
+      const { name, career, specialty } = avatarData
+
+      return name && career && specialty
+    }
     
 
     return (
@@ -55,7 +82,7 @@ export default function AvatarCreation () {
         <header>
           <h1 style={{width: "100%"}} className="center">Creación de Avatar</h1>
         </header>
-  <main className='grid vertical'>
+  <main className='grid vertical margin'>
     <div className="grid vertical gap">
     <input className="avatarInput-Image" 
   name="avatar" 
@@ -67,12 +94,9 @@ export default function AvatarCreation () {
   {...name}
   name='avatarName' 
   placeholder='Nombre'/>
-  <div className="center margin">
-    <SelectCarrer/>
-    <SelectSpecialty />
-  </div>
+    <ConditionalRenderCareerAndSpecialty/>
     </div>
-  <SaveButton id={id}/>
+   { correctAvatar() ? <SaveButton id={id}/> : null }
   </main>
       </React.Fragment>
     )

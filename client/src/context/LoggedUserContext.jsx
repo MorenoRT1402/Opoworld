@@ -3,6 +3,7 @@ import { createContext, useState, useEffect } from "react";
 import loginService from '../services/login'
 import userService from '../services/users'
 import avatarService from '../services/avatars'
+import bdConfigService from "../services/bdConfig";
 
 export const LoggedUserContext = createContext()
 
@@ -11,13 +12,15 @@ export function LoggedUserProvider ({children}) {
     const [ avatar, setAvatar ] = useState(null);
     const USER_STORAGE = 'loggedOpoUser'
 
+    const setToken = token => bdConfigService.setToken(token)
+
 //    console.log('render', user, avatar)
 
     const setUserFromLocalStorage = async () => {
         const loggedUserJSON = window.localStorage.getItem(USER_STORAGE);
         if (loggedUserJSON) {
             const userGetted = await JSON.parse(loggedUserJSON);
-            avatarService.setToken(userGetted.token);
+            setToken(userGetted.token);
             const userUpdated = await userService.get(userGetted.id)
             setUser(userUpdated)
             setAvatarFromUser(userGetted)
@@ -46,8 +49,11 @@ export function LoggedUserProvider ({children}) {
         /* eslint-disable react-hooks/exhaustive-deps */
         useEffect(() => {
             setUserFromLocalStorage()
-
         }, []);
+
+        useEffect(() => {
+//            console.log('avatar upd', avatar)
+        }, [avatar])
 
     const login = async ({ email, password }) => {
 
@@ -59,7 +65,7 @@ export function LoggedUserProvider ({children}) {
         window.localStorage.setItem(
             USER_STORAGE, JSON.stringify(user)
         )
-        avatarService.setToken(user.token)
+        setToken(user.token)
 
         setUser(user);
 
@@ -67,14 +73,14 @@ export function LoggedUserProvider ({children}) {
 
     const logout = () => {
         setUser(null)
-        avatarService.setToken(null)
+        setToken(null)
         setAvatar(null)
         window.localStorage.removeItem(USER_STORAGE)
     }
 
     const newAvatar = (newAvatar, id) => {
-        console.log({id, newAvatar, user})
-        id ? avatarService.update(newAvatar, id) : avatarService.create({newAvatar})
+        id ? avatarService.update(newAvatar, id) : avatarService.create(newAvatar)
+        setAvatar(newAvatar)
     }
 
     return (

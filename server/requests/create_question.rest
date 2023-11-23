@@ -1,0 +1,12 @@
+POST http://localhost:3001/api/questions
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1M2Y5MjMyNzE1M2E3N2IzOWYzZDU2NiIsInVzZXJuYW1lIjoidGVzdGVyIiwiaWF0IjoxNjk4ODQ1NzIzfQ.YA6XfJ8NPSXwfrveTLdJvnJeT0BKFqDlqaW6ppkjlBE
+
+
+{
+    "question": "this is the cuestion",
+    "options": [ "idk" , "to be", "or not", "to be" ],
+    "career": "Educación Primaria",
+    "specialy": "Pedagogía Terapéutica",
+    "attribute": "Programación"
+}

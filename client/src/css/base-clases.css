@@ -1,5 +1,31 @@
 @import url('theme.css');
 
+.fillhvh {
+  height: 100vh;
+}
+
+.fillvvh {
+  width: 100vh;
+}
+
+.fillvh {
+  height: 100vh;
+  width: 100vh;
+}
+
+.fillY {
+  height: 100%;
+}
+
+.fillX {
+  width: 100%;
+}
+
+.fill {
+  width: 100%;
+  height: 100%;
+}
+
 .title {
   color: var(--title-color);
   font-size: 6rem;
@@ -27,8 +53,12 @@ button:hover, .button:hover {
     background-color: var(--button-hover-bg-color);
   }
 
+  .error {
+    color: red;
+  }
+
   .margin {
-    margin: 5px;
+    margin: 8%;
   }
 
 .gap {

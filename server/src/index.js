@@ -12,7 +12,9 @@ const handleErrors = require('./DB_Connection/middlewares/handleErrors');
 
 const usersRouter = require('./controllers/users');
 const avatarsRouter = require('./controllers/avatars');
+const attributesRouter = require('./controllers/attributes')
 const loginRouter = require('./controllers/login')
+const questionsRouter = require('./controllers/questions')
 
 const jwt = require('jsonwebtoken');
 
@@ -54,11 +56,11 @@ app.get('/', (request, response) => {
   response.send('<h1>Hello World</h1>')
 })
 
-/*
 app.get('/static-path', (req, res) => {
   res.send('Ruta de archivos estáticos: ' + PUBLIC_IMAGES);
 });
 
+/*
 app.get('/static-path/:name', (req, res) => {
   const dir = PUBLIC_IMAGES
   const name = req.params.name
@@ -67,7 +69,9 @@ app.get('/static-path/:name', (req, res) => {
 });
 */
 
+app.use('/api/questions', questionsRouter)
 app.use('/api/avatars', avatarsRouter)
+app.use('/api/attr', attributesRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)
 
@@ -76,7 +80,7 @@ app.use(notFound)
 // The error handler must be registered before any other error middleware and after all controllers
 app.use(Sentry.Handlers.errorHandler());
 
-app.use(handleErrors)
+//app.use(handleErrors)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {

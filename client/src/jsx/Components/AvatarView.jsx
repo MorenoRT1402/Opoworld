@@ -1,25 +1,32 @@
 import { Link } from 'react-router-dom';
 import { PATHS } from '../../constants';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { LoggedUserContext } from '../../context/LoggedUserContext';
 import avatarService from '../../services/avatars'
+import attributesService from '../../services/attributes'
 
 export default function AvatarView() {
     const { avatar } = useContext(LoggedUserContext)
+    const [ attributesDict, setAttributesDict] = useState(avatar.attributes[0].careers[1].specialties[0].stats)
 
+    const [ life, setLife ] = useState(1)
+    const [ level, setLevel ] = useState(0)
+    const [ exp, setExp ] = useState(-1)
+
+    useEffect(() => {
+        attributesService.getAttributesDict(avatar).then( dict => {
+            setAttributesDict(dict)        
+        })
+    }, [avatar])
 
     const getAttributes = () => {
-        const attributes = [
-            { key: 'Temario', value: 1 },
-            { key: 'Supuestos Prácticos', value: 1 },
-            { key: 'Programación', value: 1 },
-            { key: 'Práctico Común', value: 1 },
-        ];
-      
-        return attributes.map((item) => (
-          <div key={item.key} className='grid-horizontal-d2 gap'>
-            <h5 className='nowrap'>{item.key} :</h5>
-            {`${item.value}`}
+
+        if(!attributesDict || attributesDict.length < 1) return <div></div>
+
+        return attributesDict.map((item) => (
+          <div key={item.name} className='grid-horizontal-d2 gap'>
+            <h5>{item.name}</h5>
+            <h5>{item.value}</h5>
           </div>
         ));
       }
@@ -43,6 +50,18 @@ export default function AvatarView() {
         return image
     }
 
+    const getBaseStat = async (prop) => {
+        console.log('50', avatar)
+        const returnedProp = await attributesService.getBaseStat( avatar, prop)
+        return returnedProp
+    }
+
+    useEffect(() => {
+        getBaseStat('life').then( stat => setLife(stat))
+        getBaseStat('level').then( stat => setLevel(stat))
+        getBaseStat('exp').then( stat => setExp(stat))
+    }, [])
+
     return (
         <div className="border container grid vertical gap margin" >
             <div className='grid-horizontal-d2'>
@@ -57,11 +76,11 @@ export default function AvatarView() {
                         <div className='grid-horizontal-d2'>
                                 <div className='grid horizontal nowrap dynamic-size'>
                                 <h5>Nivel</h5>
-                                <h5>{getProp('level', '1')}</h5>
+                                <h5>{level}</h5>
                                 </div>
                                 <div className='grid-horizontal-d2 nowrap dynamic-size'>
                                 <h5>Exp</h5>
-                                <h5>{getProp('exp', '0')}</h5>
+                                <h5>{exp}</h5>
                                 <h5>/</h5>
                                 <h5>10</h5>
                                 </div>
@@ -70,9 +89,9 @@ export default function AvatarView() {
                 </div>
             </div>
             <div className='grid vertical gap border container'>
-                            <h4 className='center'>10/10</h4>
+                            <h4 className='center'> Vida : {life}</h4>
                             <div className='avatar-atributes-columns container'>
-                                {getAttributes()}
+                                { getAttributes() }
                             </div>
                         </div>
             <EditButton>Editar</EditButton>

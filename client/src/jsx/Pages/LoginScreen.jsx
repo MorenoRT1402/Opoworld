@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { LoggedUserContext } from "../../context/LoggedUserContext";
 import { PATHS } from "../../constants";
 import { useRedirect } from "../../Hooks/useRedirect";
+import useError from "../../Hooks/useError";
 //import { Link } from "../Navigation/Link";
 
 export default function LoginScreen() {
@@ -11,6 +12,7 @@ export default function LoginScreen() {
   const email = useField({ type: 'text' })
   const password = useField({ type: 'password' })  
   const { login } = useContext(LoggedUserContext);
+  const { errorMessage, errorStyle, setErrorMessage } = useError('')
   useRedirect()
 
   const loginUserWithParams = async (ev) => {
@@ -22,6 +24,7 @@ export default function LoginScreen() {
   } catch (error) {
     console.log("Wrong credentials");
     console.error(error.message)
+    setErrorMessage('Nombre de usuario o contraseña incorrectos')
   }
   };
 
@@ -44,6 +47,7 @@ export default function LoginScreen() {
           placeholder="Password"
           {...password}
         />
+          {errorMessage && <p style={errorStyle}>{errorMessage}</p>}
         <button>
           Iniciar sesión
         </button>

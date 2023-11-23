@@ -16,17 +16,13 @@ function EmptyAvatar () {
 }
 
 export default function HomeScreen() {
-  const { user, logout } = useContext(LoggedUserContext);
+  const { user, avatar, logout } = useContext(LoggedUserContext);
 
   useRedirect()
 
   const handleLogout = () => {
     logout();
   };
-
-  const firstAvatar = () => {
-    return user ? user.avatars[0] : null
-  }
 
   return (
     <React.Fragment>
@@ -43,13 +39,13 @@ export default function HomeScreen() {
       </div>
       </header>
       <main className="grid center gap">
-      { firstAvatar()
+      { avatar
       ? <AvatarView/>
       : <EmptyAvatar/>
       }
       <div className="grid horizontal center gap">
-        <button>Crear Pregunta</button>
-        {firstAvatar() ? <button>Batalla Rápida</button> : null}
+        <Link className="button" to={PATHS.QUESTION_CREATION}> Crear Pregunta </Link>
+        {avatar ? <Link className="button" to={PATHS.BATTLE}>Batalla Rápida</Link> : null}
       </div>
     </main>
     </React.Fragment>

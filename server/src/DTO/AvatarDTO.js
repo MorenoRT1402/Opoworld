@@ -1,12 +1,10 @@
 class AvatarDTO {
-  constructor(userID ,image = "", name = "", career = "", specialty = "", level = 1, exp = 0, attributes = {}) {
+  constructor(userID ,image = "", name = "", career = "", specialty = "", attributes = {}) {
     this.userID = userID
     this.image = image;
     this.name = name;
     this.career = career;
     this.specialty = specialty;
-    this.level = level;
-    this.exp = exp;
     this.attributes = attributes;
   }
 

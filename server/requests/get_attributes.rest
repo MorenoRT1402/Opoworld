@@ -1,0 +1,2 @@
+GET http://localhost:3001/api/avatars/attr
+Content-Type: application/json

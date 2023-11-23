@@ -15,6 +15,10 @@ const UserSchema = new Schema({
     avatars: [{
       type: Schema.Types.ObjectId,
       ref: 'Avatar'
+    }],
+    questions: [{
+      type: Schema.Types.ObjectId,
+      ref: 'Question'
     }]
 })
 

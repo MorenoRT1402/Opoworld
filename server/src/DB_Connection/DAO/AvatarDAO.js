@@ -1,19 +1,50 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
+const SpecialtySchema = new Schema({
+  name : String,
+  stats: [{
+    type : Schema.Types.ObjectId,
+    ref : 'Attribute'
+  }],
+})
+
+const Specialty = mongoose.model('Specialty', SpecialtySchema)
+
+const ComplexAttributesSchema = new Schema ({
+  baseStats : {  
+    level: Number,
+    exp: Number,
+    life: Number,
+    },
+    common: [{
+      type : Schema.Types.ObjectId,
+      ref : 'Attribute'
+    }],
+    careers: [{
+      name : String,
+      specialties : 
+      [
+        {
+          type : Schema.Types.ObjectId,
+          ref : 'Specialty'
+      }
+    ]
+    }]
+  }
+  )
+
 const AvatarSchema = new Schema({
   image: String,
   name: String,
   career: String,
   specialty: String,
-  level: Number,
-  exp: Number,
-  attributes: [
-    {
-      key: String,
-      value: Number,
-    }
-  ],
+  baseStats : {
+    level : Number,
+    exp : Number,
+    life : Number
+  },
+  attributes: [],
   user: {
     type: Schema.Types.ObjectId,
     ref: 'User'

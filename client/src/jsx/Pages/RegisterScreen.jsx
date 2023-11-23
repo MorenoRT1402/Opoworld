@@ -2,15 +2,16 @@ import React, { useContext } from "react";
 import { PATHS } from "../../constants";
 import { Link, useNavigate } from "react-router-dom";
 import { useField } from "../../Hooks/useField";
-import { AvatarContext } from "../../context/AvatarContext";
 import userService from "../../services/users";
 import { LoggedUserContext } from "../../context/LoggedUserContext";
+import useError from "../../Hooks/useError";
 
 export default function RegisterScreen() {
-  const { avatarData } = useContext(AvatarContext)
   const { create } = userService
   const { login } = useContext(LoggedUserContext);
   const navigate = useNavigate()
+
+  const { errorMessage, errorStyle, setErrorMessage } = useError()
 
 
   const usernameInput = useField({ type: 'text' })
@@ -19,17 +20,17 @@ export default function RegisterScreen() {
   
   async function handleRegisterUser () {
 
+    if (!usernameInput.value || !emailInput.value || !passwordInput.value) {
+      setErrorMessage('Por favor completa todos los campos');
+      return;
+  }
+
     const username = usernameInput.value
     const email = emailInput.value
     const password = passwordInput.value
 
-    const image = avatarData.Image
-    const name = avatarData.name
-    const career = avatarData.career
-    const specialty = avatarData.specialty
-
-    console.log( {user : { username, email, password}})
-    console.log( {avatar : { image, name, career, specialty}})
+//    console.log( {user : { username, email, password}})
+//    console.log( {avatar : { image, name, career, specialty}})
 
     await create({username, email, password})
     await login({email:email, password:password})
@@ -58,6 +59,9 @@ export default function RegisterScreen() {
           placeholder="Password"
           {...passwordInput}
         />
+        </div>
+        <div className="error center">
+          {errorMessage && <p style={errorStyle}>{errorMessage}</p>}
         </div>
         <div className="register-buttons grid vertical gap">
           <Link className="button" to={PATHS.ROOT} onClick={handleRegisterUser}>Hecho</Link>

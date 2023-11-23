@@ -1,30 +1,38 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useContext, useEffect } from "react";
+import { /*useContext,*/ useEffect, useState } from "react";
+//import { AvatarContext } from "../../context/AvatarContext";
+import attributesService from '../../services/attributes'
 import { useField } from "../../Hooks/useField";
-import { AvatarContext } from "../../context/AvatarContext";
 
-/* eslint-disable react/prop-types */
-export default function SelectCarrer () {
-  const useAvatar = useContext(AvatarContext)
-  const { avatarData, updateAvatarData } = useAvatar
-  const career = useField({initialValue : avatarData.career})
+// eslint-disable-next-line react/prop-types
+const SelectCareer = ( { initialCareer, returnCareer }) => {
+  const { getCareerNames } = attributesService
+  const [ careers, setCareers ] = useState([])
+  const careerSelect = useField( { initialValue : initialCareer })
 
   useEffect(() => {
-    updateAvatarData({
-      ...avatarData,
-      career: career.value,
+    getCareerNames().then( options => {
+      setCareers(options)
     })
-  }, [career.value])
+  }, [])
+
+  useEffect(() => {
+    returnCareer(careerSelect.value)
+  }, [careerSelect.value])
 
   return (
     <select
-    {...career}
+    {...careerSelect}
       id="career"
       name="carrera"
     >
-      <option value="Educación Primaria">Educación Primaria</option>
-      <option value="Medicina">Medicina</option>
-      <option value="Other">Other</option>
+      {careers.map((option) => (
+        <option key={option} value={option}>
+          {option}
+        </option>
+      ))}
     </select>
   );
-}
+};
+
+export default SelectCareer

@@ -1,41 +1,36 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect, useContext } from "react";
-import { AvatarContext } from "../../context/AvatarContext";
+import { useState, useEffect } from "react";
 import { useField } from "../../Hooks/useField";
 
+import attributesService from '../../services/attributes'
+
 /* eslint-disable react/prop-types */
-const SelectSpecialty = () => {
-    const useAvatar = useContext(AvatarContext)
-    const { avatarData, updateAvatarData } = useAvatar
-    const specialty = useField({initialValue : avatarData.specialty})
-    const [specialties, setSpecialties] = useState([]);
+const SelectSpecialty = ({ career, initialSpeciality, returnSpecialty }) => {
+    const specialty = useField({initialValue : initialSpeciality}) // Change And Save Current Specialty
+    const [specialties, setSpecialties] = useState([]); // Store Updated Options for Input
+    const { getSpecialtiesByCareer } = attributesService
   
     useEffect(() => {
-      const options = getSpecialtiesForCareer(avatarData.career);
-      setSpecialties(options);
-    }, [avatarData.career]);
+      getSpecialtyNamesForCareer(career).then( options => {
+        setSpecialties(options)
+        returnSpecialty(specialties[0])
+    }, [career])})
 
     useEffect(() => {
-      updateAvatarData({
-        ...avatarData,
-        specialty: specialty.value,
-      })
+      returnSpecialty(specialty.value)
     }, [specialty.value])
 
-    function getSpecialtiesForCareer(career) {
-      const specialtiesByCareer = {
-        "Educación Primaria": ["Generalista", "Ed. Física", "Pedagogía Terapéutica", "Inglés"],
-        "Medicina": ["Cardiología", "Pediatría", "Cirugía"],
-        "Other": ["Example"]
-      };
-
-      return specialtiesByCareer[career] || [];
-    }
-  
+async function getSpecialtyNamesForCareer(career) {  
+  if (!career) return []
+    const specialtyObjects = await getSpecialtiesByCareer({targetCareer : career});
+    const specialtyNames = specialtyObjects.map(specialty => specialty.name);
+    return specialtyNames;
+}
+    
     return (
       <select 
       {...specialty}
-      id="specialty" name="especialidad">
+      id="specialty" name="specialty">
         {specialties.map((option) => (
           <option key={option} value={option}>
             {option}

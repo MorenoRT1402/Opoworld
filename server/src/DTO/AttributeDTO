@@ -1,0 +1,8 @@
+class AttributeDTO {
+  constructor(name = "", value = 1) {
+    this.name = name,
+    this.value = value
+  }
+}
+
+export default AttributeDTO;

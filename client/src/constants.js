@@ -14,5 +14,7 @@ export const PATHS = {
     LOGIN : '/login',
     REGISTER : '/register',
     HOME : '/home',
-    AVATAR_EDIT : '/avatar/edit'
+    AVATAR_EDIT : '/avatar/edit',
+    QUESTION_CREATION : '/question/creation',
+    BATTLE: '/battle'
 }

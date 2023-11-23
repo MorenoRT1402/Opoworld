@@ -5,15 +5,75 @@ const User = require('../DB_Connection/DAO/UserDAO')
 const { uploadFile, saveImage, getImage, clearImageDir } = require('../imgStorage');
 
 const userExtractor = require('../DB_Connection/middlewares/userExtractor');
+const { defaultAvatar } = require('../defaultAvatar');
 
-const schema = 'user'
-const populateObj = {
+const defaultAttributes = require('../defaultAttributes').attributes
+
+const userSchema = 'user'
+const userPopulate = {
     passwordHas: 0,
     avatars: 0,
 }
 
+const attributeSchema = 'attributes'
+
+const saveAndUpdateCareers = originalCareers => {
+    const updatedCareers = originalCareers
+
+    originalCareers.forEach(career => {
+    })
+}
+
+const saveUpdatedAttributes = originalAttrs => {
+    const returnedAttrs = originalAttrs || defaultAttributes
+
+    if(originalAttrs) {
+    
+        returnedAttrs.baseStats = {
+            ...defaultAttributes.baseStats,
+        }
+    
+        returnedAttrs.common = {
+            ...defaultAttributes.common,
+            ...originalAttrs.common
+        }
+    }
+
+    returnedAttrs.careers = saveAndUpdateCareers (returnedAttrs.careers)
+    
+    return returnedAttrs
+
+}
+
+const getUpdatedAttributes = originalAttrs => {
+    const returnedAttrs = {...defaultAttributes}
+
+    if (!originalAttrs) return returnedAttrs
+
+    returnedAttrs.baseStats = {
+        ...defaultAttributes.baseStats,
+        ...originalAttrs.baseStats
+    }
+
+    returnedAttrs.common = {
+        ...defaultAttributes.common,
+        ...originalAttrs.common
+    }
+
+    returnedAttrs.careers = {
+        ...defaultAttributes.careers,
+        ...originalAttrs.careers
+    }
+
+    return returnedAttrs
+}
+
+avatarsRouter.get('/default', async (request, response) => {
+    response.json(defaultAvatar)
+})
+
 avatarsRouter.get('/', async (request, response) => {
-    const avatars = await Avatar.find({}).populate( schema, populateObj)
+    const avatars = await Avatar.find({}).populate( userSchema, userPopulate).populate(attributeSchema)
     response.json(avatars)
 })
 
@@ -39,8 +99,8 @@ avatarsRouter.get('/:id', (request, response, next) => {
 
 avatarsRouter.get('/:id', async (request, response) => {
     const { id } = request.params
-    const avatar = await Avatar.findById(id).populate( schema, populateObj)
-//    avatar.image = avatar.image !== '' ? getImage(avatar.image) : ''
+    if(typeof(id) !== 'string') return
+    const avatar = await Avatar.findById(id).populate( userSchema, userPopulate ).populate(attributeSchema)
     response.json(avatar)
 })
 
@@ -49,8 +109,6 @@ avatarsRouter.put('/:id', userExtractor, uploadFile, async (request, response, n
         const { id } = request.params;
         const avatarUpdates = request.body;
         const fileImage = request.file;
-
-        console.log('put', {avatarUpdates}, {fileImage})
 
         if (avatarUpdates._id) {
             delete avatarUpdates._id;
@@ -64,6 +122,7 @@ avatarsRouter.put('/:id', userExtractor, uploadFile, async (request, response, n
 
         const avatarToRegister = new Avatar({
             ...avatarUpdates,
+            atributes : getUpdatedAttributes(avatarUpdates.career, avatarUpdates.specialty, avatarUpdates.attributes),
             user : avatarUpdates.user.id
         })
 
@@ -79,14 +138,11 @@ avatarsRouter.put('/:id', userExtractor, uploadFile, async (request, response, n
     }
 });
 
-
 avatarsRouter.post('/', userExtractor, uploadFile, async (request, response, next) => {
     const {
         name,
         career,
         specialty,
-        level = 1,
-        exp = 0,
         attributes,
     } = request.body
 
@@ -102,14 +158,14 @@ avatarsRouter.post('/', userExtractor, uploadFile, async (request, response, nex
         })
     }
 
+    const updatedAttributes = getUpdatedAttributes(attributes);
+
     const avatarToRegister = new Avatar({
         image : fileImage,
         name: name,
         career,
         specialty,
-        level,
-        exp,
-        attributes,
+        attributes : updatedAttributes,
         user: user
     })
 
