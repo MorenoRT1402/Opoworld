@@ -49,8 +49,6 @@ export default function QuestionCreation() {
     attribute: 'Temario'
   })
 
-  console.log('49', questionData)
-
   const { errorMessage, errorStyle, setErrorMessage } = useError()
 
   const { getDefaultAvatar } = avatarsServide
@@ -80,8 +78,6 @@ export default function QuestionCreation() {
     }
 
     const options = [ correctOption.value, optionB.value, optionC.value, optionD.value ]
-
-    console.log('86', options, correctOption.value, optionB.value, optionC.value, optionD.value)
 
     const questionToRegister = {
         question: question.value,

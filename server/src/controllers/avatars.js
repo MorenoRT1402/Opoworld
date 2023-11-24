@@ -173,7 +173,6 @@ avatarsRouter.post('/', userExtractor, uploadFile, async (request, response, nex
         const newPath = saveImage(fileImage)
         await clearImageDir()
         avatarToRegister.image = newPath
-        console.log('180', avatarToRegister.attributes)
         const savedAvatar = await avatarToRegister.save()
         user.avatars = user.avatars.concat(savedAvatar._id)
         await user.save()

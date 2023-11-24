@@ -5,7 +5,7 @@ import bdConfig from '../services/bdConfig';
 
 export const useLoggedUser = () => {
     const [user, setUser] = useState(() => null);
-    console.log('render useLoggedUser', user)
+//    console.log('render useLoggedUser', user)
     const [avatar, setAvatar] = useState(null);
     const USER_STORAGE = 'loggedOpoUser'
     //    const AVATAR_IN_USE = 'avatarInUser'
@@ -37,14 +37,12 @@ export const useLoggedUser = () => {
     }
 
     useEffect(() => {
-        console.log('useEffect user update', user)
+//        console.log('useEffect user update', user)
     }, [user])
 
     /* eslint-disable react-hooks/exhaustive-deps */
     useEffect(() => {
-        console.log('useEffect ls 1', user)
         setUserFromLocalStorage();
-        console.log('useEffect ls 2', user)
     }, []);
 
     const login = async ({ email, password }) => {
@@ -61,9 +59,7 @@ export const useLoggedUser = () => {
 
         setUser(user);
 
-        console.log('sasas', user)
-
-        console.log(user, user.token, avatar)
+//        console.log(user, user.token, avatar)
     }
 
     const logout = () => {

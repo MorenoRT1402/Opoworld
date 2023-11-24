@@ -24,6 +24,7 @@ export default function HomeScreen() {
     logout();
   };
 
+  if(user)
   return (
     <React.Fragment>
       <header>

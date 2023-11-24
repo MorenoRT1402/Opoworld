@@ -22,8 +22,6 @@ questionsRouter.post('/', userExtractor, async (request, response, next) => {
         attribute,
     } = request.body
 
-    console.log('27', request.body)
-
     const { userId } = request
 
     const user = await User.findById(userId)
@@ -36,8 +34,6 @@ questionsRouter.post('/', userExtractor, async (request, response, next) => {
         attribute: attribute,
         user
     })
-
-    console.log('40', questionToRegister)
 
     try {
         const savedQuestion = await questionToRegister.save()

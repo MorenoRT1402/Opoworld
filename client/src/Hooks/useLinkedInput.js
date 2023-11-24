@@ -5,7 +5,7 @@ export const useLinkedInput = (linkedValue, linkedUpdate = () => {}) => {
 
     useEffect(() => {
         setValue(value)
-        console.log('12', value)
+//        console.log('12', value)
     },[linkedValue])
 
     useEffect(() => {

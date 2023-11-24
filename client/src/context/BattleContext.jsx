@@ -11,7 +11,7 @@ export const BattleContext = createContext()
 export function BattleProvider ({children}) {
     const { getRandomAvatar, update } = avatarsService
     const { getRandomOfSpecialty, shuffleOptions } = questionsService
-    const { getBaseStat, getStat, getDropExpValue, addExp, updateStats } = attributesService
+    const { getBaseStat, getStatByNameSync, getDropExpValue, addExp, updateStats } = attributesService
 
     const { avatar } = useContext(LoggedUserContext)
     const [ player, setPlayer] = useState(null)
@@ -50,8 +50,17 @@ export function BattleProvider ({children}) {
     //#region UseEffects
 
     useEffect(() => {
-        console.log('53', expAdded, battleState)
+        console.log('follow level 53', expAdded, battleState)
     }, [expAdded, battleState])
+
+    useEffect(() => {
+        if (battleState === BATTLE_STATES.LOSE || battleState === BATTLE_STATES.VICTORY) {
+            AddBattleRewards();
+        }
+        else
+        setExpAdded(-1)
+    }, [battleState]);
+    
 
     useEffect(() => {
         checkBattleState()
@@ -67,15 +76,10 @@ export function BattleProvider ({children}) {
 useEffect(() => {
     if (!player || !rival) return;
 
-    const turnOwner = playerTurn ? player : rival;
-    getRandomOfSpecialty(turnOwner.specialty).then(randomQuestion => {
-        const shuffledOptions = shuffleOptions(randomQuestion);
+    generateQuestion()
+    if(!playerTurn)
+    rivalAnswer()
 
-        setQuestion({
-            ...randomQuestion,
-            options: shuffledOptions,
-        });
-    });
 }, [player, rival, playerTurn]);
 
     
@@ -92,7 +96,7 @@ useEffect(() => {
         if(battleState && battleState != BATTLE_STATES.NONE){ // To avoid early activation
         checkLifes()
         }
-    }, [playerLife, rivalLife])
+    }, [playerLife, rivalLife, playerTurn])
 
     //#endregion
 
@@ -116,7 +120,33 @@ useEffect(() => {
         setPlayerTurn((prevTurn) => !prevTurn);
     };
 
+    const generateQuestion = () => {
+        const turnOwner = playerTurn ? player : rival;
+        getRandomOfSpecialty(turnOwner.specialty).then(randomQuestion => {
+            const shuffledOptions = shuffleOptions(randomQuestion);
+    
+            setQuestion({
+                ...randomQuestion,
+                options: shuffledOptions,
+            })
+        })
+    } 
+
+    const rivalAnswer = () => {
+        if (!question || !question.options || question.options.length === 0) return;
+    
+//        setTimeout(() => {
+            const randomIndex = Math.floor(Math.random() * question.options.length);
+            const selectedOption = question.options[randomIndex];
+        
+            checkAnswer(rival, selectedOption);
+//        }, 500); // Delay
+    }
+    
+    
+
     const doDamage = (setTargetLife, stat) => {
+        console.log('follow stat damage 147', stat)
         const statValue = stat.value
         const range = 0.5
         const min = 0.75
@@ -151,7 +181,7 @@ useEffect(() => {
     };
 
     const AddBattleRewards = async () => {
-//        if (battleState !== BATTLE_STATES.VICTORY && battleState !== BATTLE_STATES.LOSE) return
+        if (battleState !== BATTLE_STATES.VICTORY && battleState !== BATTLE_STATES.LOSE) return
 
         getDropExpValue(rival).then( dropExpValue => {
             const expToAdd = Math.floor(battleState == BATTLE_STATES.VICTORY ? dropExpValue : dropExpValue / 2)
@@ -172,12 +202,10 @@ useEffect(() => {
         if (playerLife <= deadValue) {
             console.log('Derrota')
             setBattleState(BATTLE_STATES.LOSE)
-            AddBattleRewards()
         }
         else if (rivalLife <= deadValue) {
             console.log('Victoria')
             setBattleState(BATTLE_STATES.VICTORY)
-            AddBattleRewards()
         }
     }
 
@@ -187,11 +215,12 @@ useEffect(() => {
         const setTargetLife = target === rival ? setRivalLife : setPlayerLife
 
         if(isCorrect) {
-            getStat(avatar, question.attribute).then( stat => {
-                doDamage(setTargetLife, stat)
-                addStatexp(avatar, stat)
-            })
+            const stat = getStatByNameSync(avatar, question.career, question.specialty, question.attribute)
+            console.log('follow stat damage 218', avatar, question.attribute, stat)
+            doDamage(setTargetLife, stat)
+            addStatexp(avatar, stat)
         }
+        toggleTurn()
     }
 
     const endBattle = () => {

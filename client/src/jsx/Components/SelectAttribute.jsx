@@ -9,16 +9,13 @@ const SelectAttribute = ( { specialty, initialAttr = '', returnAttr }) => {
     const { getStatNamesBySpecialty } = attributesService
 
     useEffect(() => {
-        console.log('12', specialty)
         getStatNamesBySpecialty({specialtyName : specialty}).then( stats => {
-            console.log('13', stats)
             setStats(stats)
             returnAttr(stats[0])
         })
     }, [specialty])
 
     useEffect(() => {
-        console.log('20', attribute.value)
         returnAttr(attribute.value)
     }, [attribute.value])
 

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { PATHS } from '../../constants';
+import { EXP_AND_LEVEL, PATHS } from '../../constants';
 import { useContext, useEffect, useState } from 'react';
 import { LoggedUserContext } from '../../context/LoggedUserContext';
 import avatarService from '../../services/avatars'
@@ -12,15 +12,21 @@ export default function AvatarView() {
     const [ life, setLife ] = useState(1)
     const [ level, setLevel ] = useState(0)
     const [ exp, setExp ] = useState(-1)
+    const [ nextLevel, setNextLevel] = useState(0)
+
+    useEffect(() => {
+//        console.log('17', life)
+    }, [life])
 
     useEffect(() => {
         attributesService.getAttributesDict(avatar).then( dict => {
+            console.log('follow statsUp 23', attributesDict)
             setAttributesDict(dict)        
         })
     }, [avatar])
 
     const getAttributes = () => {
-
+        console.log('follow statsUp 28', attributesDict)
         if(!attributesDict || attributesDict.length < 1) return <div></div>
 
         return attributesDict.map((item) => (
@@ -51,7 +57,6 @@ export default function AvatarView() {
     }
 
     const getBaseStat = async (prop) => {
-        console.log('50', avatar)
         const returnedProp = await attributesService.getBaseStat( avatar, prop)
         return returnedProp
     }
@@ -61,6 +66,11 @@ export default function AvatarView() {
         getBaseStat('level').then( stat => setLevel(stat))
         getBaseStat('exp').then( stat => setExp(stat))
     }, [])
+
+    useEffect(() => {
+        const expNL = EXP_AND_LEVEL.CALCULATE_EXP_REQ(level)
+        setNextLevel(expNL)
+    }, [exp, level])
 
     return (
         <div className="border container grid vertical gap margin" >
@@ -82,7 +92,7 @@ export default function AvatarView() {
                                 <h5>Exp</h5>
                                 <h5>{exp}</h5>
                                 <h5>/</h5>
-                                <h5>10</h5>
+                                <h5>{nextLevel}</h5>
                                 </div>
                             </div>
                     </div>

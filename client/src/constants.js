@@ -19,23 +19,6 @@ export const PATHS = {
     BATTLE: '/battle'
 }
 
-export const EXP_AND_LEVEL = {
-    BASE_EXP : 9,
-    C1 : 1.1 ,// depends on how long you want each level to take
-    C2 : 0.7, // depends on how close you want to keep the player to the level of the enemies they fight
-    CALCULATE_EXP_REQ : () => calculateExpReq,
-    CALCULATE_LEVEL : () => calculatelevel,
-    LIFES_AT_LEVEL_UP : () => lifesAtLevelUp
-}
-
-const lifesAtLevelUp = () => {
-    const min = 1
-    const max = 3
-
-    const randomNumber = min + Math.random() * ( max - min )
-    return randomNumber
-}
-
 export const calculateExpReq = level => {
     const baseExp = EXP_AND_LEVEL.BASE_EXP
     const c1 = EXP_AND_LEVEL.C1
@@ -59,4 +42,31 @@ export const calculatelevel = exp => {
     const level = Math.pow(levelSimplify, 1 / exponencialSimplify);
 
     return Math.floor(level)
+}
+
+export const EXP_AND_LEVEL = {
+    BASE_EXP : 9,
+    C1 : 1.1 ,// depends on how long you want each level to take
+    C2 : 0.7, // depends on how close you want to keep the player to the level of the enemies they fight
+    CALCULATE_EXP_REQ: function calculateExpReq(level) {
+        const baseExp = this.BASE_EXP
+        const levelUpDifficult = Math.pow(level, this.C1)
+        const progressionDifficult = Math.pow(level, this.C2)
+        const expReq = levelUpDifficult * progressionDifficult + baseExp
+        return Math.ceil(expReq)
+    },
+    CALCULATE_LEVEL: function calculatelevel(exp) {
+        const baseExp = this.BASE_EXP
+        if (exp < baseExp) return 1
+        const exponencialSimplify = this.C1 + this.C2
+        const levelSimplify = exp - baseExp
+        const level = Math.pow(levelSimplify, 1 / exponencialSimplify)
+        return Math.ceil(level)
+    },
+    LIFES_AT_LEVEL_UP: function lifesAtLevelUp() {
+        const min = 1
+        const max = 3
+        const randomNumber = min + Math.random() * (max - min)
+        return Math.floor(randomNumber)
+    }
 }

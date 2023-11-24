@@ -11,7 +11,6 @@ const useAvatar = () => {
 
   const updateAvatarData = (newAvatarData) => {
     setAvatarData(newAvatarData);
-    console.log('updating avatar', {avatarData})
   };
 
   return { avatarData, updateAvatarData };

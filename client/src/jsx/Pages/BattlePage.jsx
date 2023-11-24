@@ -20,13 +20,13 @@ function BattleResult() {
     const messageToShow = battleState == BATTLE_STATES.VICTORY ? victoryMessage : loseMessage
 
     const getExpText = () => {
-        console.log('22', expAdded)
+        console.log('follow level 22', expAdded)
         return expAdded > 0 ? `${expWonText}${expAdded}` : ''
     }
 
     useEffect(() => {
         setExpText(getExpText())
-    }, [expAdded])
+    }, [expAdded, battleState])
 
     const showBattleResult = (() => {
         return (
@@ -40,8 +40,15 @@ function BattleResult() {
         )
     })
 
+    const conditionalRender = () => {
+        const battleStateCondition = battleState === BATTLE_STATES.VICTORY || battleState === BATTLE_STATES.LOSE
+        const condition = expAdded > -1 && battleStateCondition
+        console.log('follow result 46', battleState, expAdded)
+        return condition ? showBattleResult() : Loading()
+    }
+
     return (
-        expAdded > -1 ? showBattleResult(): Loading()
+        conditionalRender()
     )
 }
 
@@ -94,7 +101,7 @@ function BattlerInfo({ position = 'top', avatar }) {
 }
 
 function BattleQuestion() {
-    const { player, question, checkAnswer } = useContext(BattleContext)
+    const { player, playerTurn, question, checkAnswer } = useContext(BattleContext)
 
 
     const instanceOptions = () => {
@@ -109,6 +116,7 @@ function BattleQuestion() {
     };
 
     const showQuestion = () => {
+        if(playerTurn)
         return (
             <div className="grid vertical fill" style={{ margin : '1px' }}>
                 <div className="center" style={{ 'backgroundColor' : 'white', borderRadius : '10px' }}>
