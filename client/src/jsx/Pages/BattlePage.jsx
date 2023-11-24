@@ -4,14 +4,53 @@ import React, { useContext, useEffect, useState } from "react";
 import avatarsService from "../../services/avatars";
 import attributesService from "../../services/attributes";
 import { Loading } from "./Loading";
-import { LoggedUserContext } from "../../context/LoggedUserContext";
-import questionsService from "../../services/questions";
 import { BattleContext } from "../../context/BattleContext";
+import { Link } from "react-router-dom";
+import { PATHS } from "../../constants";
+
+function BattleResult() {
+    const { BATTLE_STATES, battleState, expAdded, endBattle } = useContext(BattleContext)
+    const [ expText, setExpText ] = useState('')
+
+    const victoryMessage = '¡VICTORIA!'
+    const loseMessage = 'DERROTA...'
+    const expWonText = 'Experiencia obtenida: '
+    const buttonText = 'OK!'
+
+    const messageToShow = battleState == BATTLE_STATES.VICTORY ? victoryMessage : loseMessage
+
+    const getExpText = () => {
+        console.log('22', expAdded)
+        return expAdded > 0 ? `${expWonText}${expAdded}` : ''
+    }
+
+    useEffect(() => {
+        setExpText(getExpText())
+    }, [expAdded])
+
+    const showBattleResult = (() => {
+        return (
+            <main className="border margin padding gap" style={{ width : "95%", height : "70%", backgroundColor : "lightgray", gap : "50px"}}>
+                <h2>{messageToShow}</h2>
+                <div>
+                    <p>{expText}</p>
+                </div>
+                <Link to={PATHS.HOME} className="button" onClick={endBattle}> {buttonText} </Link>
+            </main>
+        )
+    })
+
+    return (
+        expAdded > -1 ? showBattleResult(): Loading()
+    )
+}
 
 // eslint-disable-next-line react/prop-types
 function BattlerInfo({ position = 'top', avatar }) {
-    const [ life, setLife ] = useState(10)
+    const { getBattlerType, getLife } = useContext(BattleContext)
     const [ maxLife, setMaxLife ] = useState(10)
+
+    const battlerType = getBattlerType(position)
 
     const style = {
         display: 'flex',
@@ -24,7 +63,6 @@ function BattlerInfo({ position = 'top', avatar }) {
         color : '#fff'
     };
     const getBaseStat = async (prop) => {
-        console.log(avatar)
         const returnedProp = await attributesService.getBaseStat( avatar, prop)
         return returnedProp
     }
@@ -32,7 +70,6 @@ function BattlerInfo({ position = 'top', avatar }) {
     useEffect(() => {
         getBaseStat('life').then( stat => {
             setMaxLife(stat)
-            setLife(stat)
         })
     }, [])
 
@@ -50,7 +87,7 @@ function BattlerInfo({ position = 'top', avatar }) {
             </div>
             <div>
                 <p>{name}</p>
-                <p>{`${life}/${maxLife}`}</p>
+                <p>{`${getLife(battlerType)}/${maxLife}`}</p>
             </div>
         </div>
     );
@@ -90,23 +127,36 @@ function BattleQuestion() {
 }
 
 function Battleground () {
+    const { BATTLE_STATES, battleState } = useContext(BattleContext)
+
+    const getBattlegroundComponent = () => {
+
+        switch (battleState) {
+            case BATTLE_STATES.VICTORY:
+                return <BattleResult />
+            case BATTLE_STATES.LOSE:
+                return <BattleResult />
+            default:
+                return <BattleQuestion />
+        }
+    }
 
     return (
         <div className=" center fill" style={{ padding : '100px', width : '70%', height : '70%' }}>
-            <BattleQuestion />
+            {getBattlegroundComponent()}
         </div>
     )
 }
 
 export default function BattlePage() {
-    const { player, rival } = useContext(BattleContext)
+    const { POSITIONS, player, rival } = useContext(BattleContext)
 
     const setBattleScene = () => {
         return (
             <React.Fragment>
-                <BattlerInfo position='top' avatar={rival} />
+                <BattlerInfo position={POSITIONS.TOP} avatar={rival} />
                 <Battleground />
-                <BattlerInfo position='bottom' avatar={player} />
+                <BattlerInfo position={POSITIONS.BOTTOM} avatar={player} />
             </React.Fragment>
         )
     }

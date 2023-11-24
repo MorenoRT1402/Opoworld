@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { BASE_URL } from '../constants'
+import { BASE_URL , EXP_AND_LEVEL} from '../constants'
 import avatarService from './avatars'
 
 const baseUrl = `${BASE_URL}/api/attr`
@@ -14,6 +14,17 @@ const getDefaultAttributes = () => {
         return respo
     })
 }
+
+const getMultExpDrop = () => {
+    const extension = 'multexpdropped'
+    const url = `${baseUrl}/${extension}`
+    const request = axios.get(url)
+    return request.then(response => {
+        const respo = response.data
+        return respo
+    })
+}
+
 
 const getAttributesObject = avatar => {
     if (avatar.attributes) {
@@ -39,7 +50,8 @@ const getBaseStats = (obj) => {
 }
 
 const getBaseStat = async (obj, prop) => {
-    return await getBaseStats(obj)[prop]
+    const baseStats = getBaseStatsSync(obj)
+    return baseStats[prop]
 }
 
 const getCareers = async avatar => {
@@ -159,16 +171,13 @@ const getAttributesDict = async avatar => {
 
 const getStatNamesBySpecialty = async ({ specialtyName }) => {
     const specialties = await getSpecialties();
-    console.log('162', specialties, specialtyName)
     const matchingStats = [];
 
     for (let sp in specialties) {
         const specialty = specialties[sp];
-        console.log('167', specialty)
 
         if (specialty.name === specialtyName) {
             const stats = specialty.stats;
-            console.log('171', stats)
             for (let s in stats) {
                 matchingStats.push(stats[s].name);
             }
@@ -178,5 +187,150 @@ const getStatNamesBySpecialty = async ({ specialtyName }) => {
     return matchingStats;
 };
 
+const getStat = async (avatar, statName) => {
+    const attributesDict = await getAttributesDict(avatar)
+    for( var statIndex in attributesDict ) {
+        if ( attributesDict[ statIndex ].name === statName ){
+            return attributesDict[statIndex]
+        }
+    }
+}
 
-export default { getDefaultAttributes, getAttributesObject, getBaseStat, getCareerNames, getSpecialtiesByCareer, getAttributesDict, getStatNamesBySpecialty }
+const LevelUp = avatar => {
+    const lifeUp = EXP_AND_LEVEL.LIFES_AT_LEVEL_UP()
+    const baseStats = getBaseStatsSync(avatar)
+    baseStats.life+= lifeUp
+    baseStats.level++
+}
+
+const checkLevelUp = async (avatar, newTotalExp) => {
+    const avatarLevel = getBaseStatSync(avatar, 'level')
+    console.log('208', avatarLevel, newTotalExp)
+    const newLevel = EXP_AND_LEVEL.CALCULATE_LEVEL(newTotalExp)
+    const levelDiff = newLevel(newTotalExp) - avatarLevel
+
+    console.log('212', levelDiff)
+    
+    for (let i = 0; i < levelDiff; i++) {
+        LevelUp(avatar)
+    }
+}
+
+const addExp = async ( avatar, expToAdd ) => {
+    const baseStats = getBaseStatsSync(avatar)
+    baseStats.exp += expToAdd
+
+    checkLevelUp(avatar, baseStats.exp)
+} 
+
+const updateStats = async (avatar, careerName, specialtyName, newStats) => {
+    const oldStats = getStatsBySpecialtySync(avatar, careerName, specialtyName);
+
+    for (const newStat of newStats) {
+        const existingStatIndex = oldStats.findIndex(stat => stat.name === newStat.name);
+
+        if (existingStatIndex !== -1) {
+            if (oldStats[existingStatIndex].value !== newStat.value) {
+                oldStats[existingStatIndex].value = newStat.value;
+            }
+        } else {
+            oldStats.push(newStat);
+        }
+    }
+
+    avatarService.update(avatar, avatar.id).then( response => {return response.data} )
+};
+
+
+const getDropExpValue = async (avatar) => {
+    const totalExp = getBaseStatSync(avatar, 'exp') + 1
+    console.log('251', totalExp)
+    const multExpDropped = await getMultExpDrop()
+    return Math.ceil(totalExp * multExpDropped)
+}
+
+//#region Sync methods
+
+const getPropSync = (avatar, prop) => {
+    console.log('262',avatar, prop, avatar[prop])
+    return avatar[prop]
+}
+
+const getAttributesSync = avatar => {
+    const attributes = getPropSync(avatar, 'attributes')
+    console.log('267', attributes)
+    return attributes[0]
+}
+
+const getBaseStatsSync = avatar => {
+    console.log('273', avatar )
+    const attributes = getAttributesSync(avatar)
+    console.log('271', attributes, attributes.baseStats)
+    return attributes.baseStats
+}
+
+const getBaseStatSync = (avatar, statName) => {
+    const baseStats = getBaseStatsSync(avatar)
+    console.log('280', baseStats, baseStats[statName])
+    return baseStats[statName]
+}
+
+const getCareersSync = avatar => {
+    const attributes = getAttributesSync(avatar)
+    return attributes.careers
+}
+
+const getCareerSync = (avatar, careerName) => {
+    const careers = getCareersSync(avatar)
+
+    console.log('275', careers)
+    
+    for (var careerIndex in careers){
+        const career = careers[careerIndex]
+        if (career.name == careerName)
+            return career
+    }
+}
+
+const getSpecialtiesByCareerSync = (avatar, careerName) => {
+    console.log('283', avatar, careerName)
+    const careers = getCareerSync(avatar, careerName)
+    console.log('285', careers)
+    return careers.specialties
+}
+
+const getSpecialtySync = (avatar, careerName, specialtyName) => {
+    console.log('293', careerName)
+    const specialties = getSpecialtiesByCareerSync(avatar, careerName)
+    
+    for (var specialtyIndex in specialties){
+        const specialty = specialties[specialtyIndex]
+        if (specialty.name == specialtyName)
+            return specialty
+    }
+}
+
+const getStatsBySpecialtySync = (avatar, careerName, specialtyName) => {
+    console.log('304', careerName, specialtyName)
+    const specialty = getSpecialtySync(avatar, careerName, specialtyName)
+    return specialty.stats
+}
+
+const getStatByNameSync = (avatar, careerName, specialtyName, statName) => {
+    const stats = getStatsBySpecialtySync(avatar, careerName, specialtyName)
+    
+    for (var statIndex in stats){
+        const stat = stats[statIndex]
+        if (stat.name == statName)
+            return stat
+    }
+}
+
+//#endregion
+
+
+export default { 
+    getDefaultAttributes, getAttributesObject, getBaseStat, getCareerNames, 
+    getSpecialtiesByCareer, getAttributesDict, getStatNamesBySpecialty, getStat, updateStats,
+    getDropExpValue, addExp
+}

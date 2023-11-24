@@ -26,7 +26,6 @@ const get = (id) => {
     const url = `${baseUrl}${idObj}`
     const request = axios.get(url)
     return request.then(response => { 
-        console.log('38', response.data) ; 
         return response.data
     })
 }
@@ -51,7 +50,7 @@ const create = (newObject) => {
 }
 
 const update = (newObject, id) => {
-    const config = getHeader(contentType)
+    const config = getHeader(CONTENT_TYPES.JSON)
     const url = `${baseUrl}${id}`
     const avatar = newObject
 
