@@ -299,7 +299,7 @@ const getSpecialtySync = (avatar, careerName, specialtyName) => {
 
 const getStatsBySpecialtySync = (avatar, careerName, specialtyName) => {
     const specialty = getSpecialtySync(avatar, careerName, specialtyName)
-    return specialty.stats
+    return specialty.stats ? specialty.stats : null
 }
 
 const getTotalStatValuesSync = (avatar, careerName, specialtyName) => {

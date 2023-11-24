@@ -102,10 +102,6 @@ function BattlerInfo({ position = 'top', avatar }) {
 function BattleQuestion() {
     const { player, playerTurn, question, checkAnswer } = useContext(BattleContext)
 
-    useEffect(() => {
-        console.log('follow 106', question)
-    }, [question])
-
     const instanceOptions = () => {
         const options = question.options;
         if (!options || options.length < 1) return <div></div>;

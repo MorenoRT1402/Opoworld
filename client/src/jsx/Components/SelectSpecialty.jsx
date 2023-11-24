@@ -9,12 +9,12 @@ const SelectSpecialty = ({ career, initialSpeciality, returnSpecialty }) => {
     const specialty = useField({initialValue : initialSpeciality}) // Change And Save Current Specialty
     const [specialties, setSpecialties] = useState([]); // Store Updated Options for Input
     const { getSpecialtiesByCareer } = attributesService
-  
+
     useEffect(() => {
       getSpecialtyNamesForCareer(career).then( options => {
         setSpecialties(options)
         returnSpecialty(specialties[0])
-    }, [career])})
+    })}, [career])
 
     useEffect(() => {
       returnSpecialty(specialty.value)
@@ -28,9 +28,9 @@ async function getSpecialtyNamesForCareer(career) {
 }
     
     return (
-      <select 
+      <select
       {...specialty}
-      id="specialty" name="specialty">
+        id="specialty" name="specialty">
         {specialties.map((option) => (
           <option key={option} value={option}>
             {option}

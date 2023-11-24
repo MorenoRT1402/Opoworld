@@ -69,6 +69,10 @@ export default function QuestionCreation() {
     })
   }, [career, specialty, attribute])
 
+  useEffect(() => {
+  }, [specialty]);
+  
+
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -136,7 +140,7 @@ export default function QuestionCreation() {
             <div className="margin center">
                 <SelectCareer initialCareer={questionData.career} returnCareer={setCareer}/>
                 <SelectSpecialty career={questionData.career} initialSpeciality={questionData.specialty} returnSpecialty={setSpecialty}/>
-                <SelectAttribute specialty={questionData.specialty} initialAttr={questionData.attribute} returnAttr={setAttribute}/>
+                <SelectAttribute career={questionData.career} specialty={questionData.specialty} initialAttr={questionData.attribute} returnAttr={setAttribute}/>
             </div>
             <div className="error center">
             </div>

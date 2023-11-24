@@ -9,30 +9,39 @@ const baseStats = {
   ];
   
   // Education
-  const generalista = [
-    { name: 'Generalista', value: 1 },
-    { name: 'Temario', value: 1 },
-    { name: "Supuesto Práctico", value: 1 }
-  ];
-  
-  const educa = [
-    { name: "Temario", value: 1 },
-    { name: "Supuesto Práctico", value: 1 }
-  ];
-  
-  const pt = [
+
+  const educationCommons = [
+    { name: "Práctico común " , value: 1},
     { name: "Temario", value: 1 },
     { name: "Supuestos Prácticos", value: 1 },
     { name: "Programación", value: 1 }
+  ]
+
+  const generalista = [
+    ...educationCommons
+  ];
+  
+  const educa = [
+    ...educationCommons
+  ];
+  
+  const pt = [
+    ...educationCommons
   ];
   
   const ingles = [
-    { name: "Temario", value: 1 }
+    ...educationCommons
   ];
   
+  const music = [
+    ...educationCommons,
+    { name: "Composición", value: 1 },
+    { name: "Interpretación", value: 1 }
+  ]
+  
   // Medicine
-  const cardiology = [
-    { name: "Corazón", value: 1 }
+  const medicineStats = [
+    { name: "Temario", value: 1 }
   ];
   
   // -------------------------------
@@ -40,13 +49,16 @@ const baseStats = {
     { name: "Generalista", stats: generalista },
     { name: "Pedagogía Terapéutica", stats: pt },
     { name: "Educación Física", stats: educa },
-    { name: "Inglés", stats: ingles }
+    { name: "Inglés", stats: ingles },
+    { name: "Música", stats: music },
   ];
   
   const medicineSpecialties = [
-    { name: 'Cardiología', stats: cardiology },
-    { name: 'Pediatría', stats: cardiology },
-    { name: 'Cirugía', stats: cardiology },
+    { name: 'Anatomía Patológica', stats: medicineStats},
+    { name: 'Cardiología', stats: medicineStats },
+    { name: 'Pediatría', stats: medicineStats },
+    { name: 'Cirugía', stats: medicineStats },
+    { name: 'Psiquiatría', stats: medicineStats }
   ];
   
   const careers = {
