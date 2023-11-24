@@ -1,6 +1,7 @@
 import axios from 'axios'
 import bdConfigService from './bdConfig'
-import { BASE_URL } from '../constants'
+import attributesService from './attributes'
+import { AVATAR_PROPS, BASE_URL } from '../constants'
 
 const baseUrl = `${BASE_URL}/api/avatars/`
 
@@ -30,10 +31,50 @@ const get = (id) => {
     })
 }
 
+const calculatePower = avatar => {
+    const { getPropSync, getBaseStatSync, getTotalStatValuesSync } = attributesService
+    const LIFE_WEIGHT = 2
+    const career = getPropSync(avatar, AVATAR_PROPS.CAREER)
+    const life = getBaseStatSync(avatar, AVATAR_PROPS.BASE_STATS.LIFE)
+    const specialty = getPropSync(avatar, AVATAR_PROPS.SPECIALTY)
+    const totalStatValues = getTotalStatValuesSync(avatar, career, specialty)
+
+    return life * LIFE_WEIGHT + totalStatValues
+}
+
+const getClosestPowers = (targetPower, avatarsList) => {
+    let closestAvatars = [];
+    let minDiff = Number.MAX_SAFE_INTEGER;
+
+    for (const avatar of avatarsList) {
+        const avatarPower = calculatePower(avatar);
+        const powerDiff = Math.abs(targetPower - avatarPower);
+
+        if (powerDiff < minDiff) {
+            minDiff = powerDiff;
+            closestAvatars = [avatar];
+        } else if (powerDiff === minDiff) {
+            closestAvatars.push(avatar);
+        }
+    }
+
+    return closestAvatars;
+};
+
+
 const getRandomAvatar = async () => {
     const avatars = await getAll();
     const randomIndex = Math.floor(Math.random() * avatars.length);
     return avatars[randomIndex];
+};
+
+const getRandomAvatarMatchmaking = async playerAvatar => {
+    if(!playerAvatar) return
+    const avatars = await getAll();
+    const playerPower = calculatePower(playerAvatar)
+    const potenciallyRivals = getClosestPowers(playerPower, avatars)
+    const randomIndex = Math.floor(Math.random() * potenciallyRivals.length);
+    return potenciallyRivals[randomIndex];
 };
 
 const getImage = (avatar) => {
@@ -58,4 +99,4 @@ const update = (newObject, id) => {
     return request.then(response => response.data)
 }
 
-export default { getDefaultAvatar, getAll, get, getRandomAvatar, getImage, create, update }
+export default { getDefaultAvatar, getAll, get, getRandomAvatar, getRandomAvatarMatchmaking, getImage, create, update }

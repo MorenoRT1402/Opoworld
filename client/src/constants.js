@@ -19,6 +19,26 @@ export const PATHS = {
     BATTLE: '/battle'
 }
 
+export const ERRORS = {
+    DUPLICATE_KEY : 'E11000'
+}
+
+export const AVATAR_PROPS = {
+    ID : 'id',
+    IMAGE : 'image',
+    NAME : 'name',
+    CAREER : 'career',
+    SPECIALTY : 'specialty',
+    ATTRIBUTES : 'attributes', 
+    BASE_STATS : {
+        LIFE : 'life',
+        LEVEL : 'level',
+        EXP : 'exp'
+    },
+}
+
+//#region RPG
+
 export const calculateExpReq = level => {
     const baseExp = EXP_AND_LEVEL.BASE_EXP
     const c1 = EXP_AND_LEVEL.C1
@@ -70,3 +90,5 @@ export const EXP_AND_LEVEL = {
         return Math.floor(randomNumber)
     }
 }
+
+//#endregion

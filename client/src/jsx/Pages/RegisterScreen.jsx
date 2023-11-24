@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { PATHS } from "../../constants";
+import { ERRORS, PATHS } from "../../constants";
 import { Link, useNavigate } from "react-router-dom";
 import { useField } from "../../Hooks/useField";
 import userService from "../../services/users";
@@ -32,10 +32,23 @@ export default function RegisterScreen() {
 //    console.log( {user : { username, email, password}})
 //    console.log( {avatar : { image, name, career, specialty}})
 
-    await create({username, email, password})
-    await login({email:email, password:password})
-    navigate(PATHS.HOME)
+try {
+  await create({ username, email, password });
+  await login({ email, password });
+  navigate(PATHS.HOME);
+} catch (err) {
+  const errorType = err.response.data.split(" ")[0]
+  if (errorType === ERRORS.DUPLICATE_KEY) {
+    setErrorMessage('Usuario existente')
   }
+  else if (err.response && err.response.data && err.response.data.error) {
+    console.log('asadadad')
+    setErrorMessage(err.response.data.error);
+  } else {
+    setErrorMessage('Ha ocurrido un error. Inténtalo de nuevo.');
+  }
+}
+}
   
   return (
     <React.Fragment>
@@ -60,11 +73,11 @@ export default function RegisterScreen() {
           {...passwordInput}
         />
         </div>
-        <div className="error center">
+        <div className="">
           {errorMessage && <p style={errorStyle}>{errorMessage}</p>}
         </div>
         <div className="register-buttons grid vertical gap">
-          <Link className="button" to={PATHS.ROOT} onClick={handleRegisterUser}>Hecho</Link>
+          <Link className="button" onClick={handleRegisterUser}>Hecho</Link>
           <Link className='button' to={PATHS.LOGIN}> Volver al Login </Link>
         </div>
       </form>

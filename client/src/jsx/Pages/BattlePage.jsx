@@ -20,7 +20,7 @@ function BattleResult() {
     const messageToShow = battleState == BATTLE_STATES.VICTORY ? victoryMessage : loseMessage
 
     const getExpText = () => {
-        console.log('follow level 22', expAdded)
+//        console.log('follow level 22', expAdded)
         return expAdded > 0 ? `${expWonText}${expAdded}` : ''
     }
 
@@ -43,7 +43,6 @@ function BattleResult() {
     const conditionalRender = () => {
         const battleStateCondition = battleState === BATTLE_STATES.VICTORY || battleState === BATTLE_STATES.LOSE
         const condition = expAdded > -1 && battleStateCondition
-        console.log('follow result 46', battleState, expAdded)
         return condition ? showBattleResult() : Loading()
     }
 
@@ -103,6 +102,9 @@ function BattlerInfo({ position = 'top', avatar }) {
 function BattleQuestion() {
     const { player, playerTurn, question, checkAnswer } = useContext(BattleContext)
 
+    useEffect(() => {
+        console.log('follow 106', question)
+    }, [question])
 
     const instanceOptions = () => {
         const options = question.options;
@@ -157,7 +159,11 @@ function Battleground () {
 }
 
 export default function BattlePage() {
-    const { POSITIONS, player, rival } = useContext(BattleContext)
+    const { startBattle, POSITIONS, player, rival } = useContext(BattleContext)
+
+    useEffect(() => {
+        startBattle(); // Llamada a startBattle al montar BattlePage
+      }, []);
 
     const setBattleScene = () => {
         return (
@@ -169,9 +175,15 @@ export default function BattlePage() {
         )
     }
 
+    const conditionalRender = () => {
+        const condition = player && rival
+        return condition ? setBattleScene() : Loading()
+    }
+
     return (
         <main className="grid center fillhvh" style={{ margin : '0px'}}>
-            {player && rival ? setBattleScene() : Loading()}
+        {conditionalRender()}
         </main>
-    );
+    )
+
 }

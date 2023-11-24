@@ -5,13 +5,14 @@ import { LoggedUserContext } from "./LoggedUserContext";
 import questionsService from "../services/questions";
 import avatarsService from "../services/avatars";
 import attributesService from "../services/attributes";
+import { AVATAR_PROPS } from "../constants";
 
 export const BattleContext = createContext()
 
 export function BattleProvider ({children}) {
-    const { getRandomAvatar, update } = avatarsService
+    const { getRandomAvatarMatchmaking, update } = avatarsService
     const { getRandomOfSpecialty, shuffleOptions } = questionsService
-    const { getBaseStat, getStatByNameSync, getDropExpValue, addExp, updateStats } = attributesService
+    const { getBaseStatSync, getBaseStat, getStatByNameSync, getDropExpValue, addExp, updateStats } = attributesService
 
     const { avatar } = useContext(LoggedUserContext)
     const [ player, setPlayer] = useState(null)
@@ -40,6 +41,7 @@ export function BattleProvider ({children}) {
 
     const BATTLE_STATES = {
         NONE : 0,
+        PREPARED : 'PREPARED',
         STARTED: 'STARTED',
         LOSE: 'LOSE',
         VICTORY: 'VICTORY'
@@ -48,10 +50,6 @@ export function BattleProvider ({children}) {
     //#endregion
 
     //#region UseEffects
-
-    useEffect(() => {
-        console.log('follow level 53', expAdded, battleState)
-    }, [expAdded, battleState])
 
     useEffect(() => {
         if (battleState === BATTLE_STATES.LOSE || battleState === BATTLE_STATES.VICTORY) {
@@ -67,11 +65,11 @@ export function BattleProvider ({children}) {
     }, [player, playerLife, rival, rivalLife, playerTurn, question])
 
     useEffect(() => {
-        if (avatar) {
+        if (avatar && battleState == BATTLE_STATES.PREPARED) {
             setPlayer(avatar);
             getBaseStat(avatar, 'life').then( life => setPlayerLife(life))
         }
-    }, [avatar]);
+    }, [avatar, battleState]);
     
 useEffect(() => {
     if (!player || !rival) return;
@@ -84,13 +82,15 @@ useEffect(() => {
 
     
     useEffect(() => {
+        if(!player) return
         if (!rival) {
-            getRandomAvatar().then(avatar => {
+            getRandomAvatarMatchmaking(player).then(avatar => {
                 setRival(avatar)
-                getBaseStat(avatar, 'life').then( life => setRivalLife(life))
+                const life = getBaseStatSync(avatar, AVATAR_PROPS.BASE_STATS.LIFE)
+                setRivalLife(life)
             });
         }
-    }, [rival]);
+    }, [player]);
 
     useEffect(() => {
         if(battleState && battleState != BATTLE_STATES.NONE){ // To avoid early activation
@@ -103,7 +103,7 @@ useEffect(() => {
     //#region Methods
 
     const checkBattleState = () => {
-        if(player && rival && playerLife && rivalLife && playerTurn && (battleState == BATTLE_STATES.NONE || !battleState)){
+        if(player && rival && playerLife && rivalLife > 0 && playerTurn && (battleState != BATTLE_STATES.VICTORY || BATTLE_STATES.LOSE)){
             setBattleState(BATTLE_STATES.STARTED)
         }
     }
@@ -146,7 +146,6 @@ useEffect(() => {
     
 
     const doDamage = (setTargetLife, stat) => {
-        console.log('follow stat damage 147', stat)
         const statValue = stat.value
         const range = 0.5
         const min = 0.75
@@ -181,6 +180,7 @@ useEffect(() => {
     };
 
     const AddBattleRewards = async () => {
+        if(!rival) return
         if (battleState !== BATTLE_STATES.VICTORY && battleState !== BATTLE_STATES.LOSE) return
 
         getDropExpValue(rival).then( dropExpValue => {
@@ -216,16 +216,21 @@ useEffect(() => {
 
         if(isCorrect) {
             const stat = getStatByNameSync(avatar, question.career, question.specialty, question.attribute)
-            console.log('follow stat damage 218', avatar, question.attribute, stat)
             doDamage(setTargetLife, stat)
             addStatexp(avatar, stat)
         }
         toggleTurn()
     }
 
+    const startBattle = () => {
+        if(battleState == BATTLE_STATES.NONE || !battleState)
+        setBattleState(BATTLE_STATES.PREPARED)
+    }
+
     const endBattle = () => {
         setBattleState(BATTLE_STATES.NONE)
         setRival(null)
+        setPlayer(null)
         setExpAdded(-1)
     }
 
@@ -234,7 +239,7 @@ useEffect(() => {
     return (
         <BattleContext.Provider value={{ POSITIONS, BATTLER_TYPE, getBattlerType, 
         BATTLE_STATES, battleState, player, rival, setRival, playerTurn, toggleTurn, getLife, 
-        question, checkAnswer, expAdded, endBattle }}>
+        question, checkAnswer, expAdded, startBattle, endBattle }}>
           {children}
         </BattleContext.Provider>
       );

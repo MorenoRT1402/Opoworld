@@ -1,10 +1,8 @@
 import axios from 'axios'
-import { BASE_URL , EXP_AND_LEVEL} from '../constants'
+import { AVATAR_PROPS, BASE_URL , EXP_AND_LEVEL} from '../constants'
 import avatarService from './avatars'
 
 const baseUrl = `${BASE_URL}/api/attr`
-
-const { getDefaultAvatar } = avatarService
 
 const getDefaultAttributes = () => {
     const url = `${baseUrl}`
@@ -56,7 +54,7 @@ const getBaseStat = async (obj, prop) => {
 }
 
 const getCareers = async avatar => {
-    const avatarModel = avatar ? avatar : await getDefaultAvatar()
+    const avatarModel = avatar ? avatar : await avatarService.getDefaultAvatar()
     const attributes = getAttributesObject(avatarModel)
     for (const key in attributes)
         if (key === 'careers') {
@@ -83,7 +81,7 @@ const getCareerNames = async avatar => {
     }
 
     async function byServer() {
-        const avatar = await getDefaultAvatar()
+        const avatar = await avatarService.getDefaultAvatar()
         return avatar
     }
 
@@ -162,8 +160,6 @@ const getSpecialtiesByCareer = async ({ avatar, targetCareer, careerAttributes }
 const getAttributesDict = async avatar => {
     const career = avatar.career
 
-    console.log('follow statsUp 164', avatar)
-
     const specialties = getSpecialtiesByCareerSync( avatar, career)
 
     for (let i = 0; i < specialties.length; i++) {
@@ -202,7 +198,6 @@ const getStat = async (avatar, statName) => {
 
 const LevelUp = avatar => {
     const lifeUp = EXP_AND_LEVEL.LIFES_AT_LEVEL_UP()
-    console.log('follow level 201', lifeUp, EXP_AND_LEVEL.LIFES_AT_LEVEL_UP())
     const baseStats = getBaseStatsSync(avatar)
     baseStats.life+= lifeUp
     baseStats.level++
@@ -257,7 +252,7 @@ const getPropSync = (avatar, prop) => {
 }
 
 const getAttributesSync = avatar => {
-    const attributes = getPropSync(avatar, 'attributes')
+    const attributes = getPropSync(avatar, AVATAR_PROPS.ATTRIBUTES)
     return attributes[0]
 }
 
@@ -307,6 +302,17 @@ const getStatsBySpecialtySync = (avatar, careerName, specialtyName) => {
     return specialty.stats
 }
 
+const getTotalStatValuesSync = (avatar, careerName, specialtyName) => {
+    const stats = getStatsBySpecialtySync(avatar, careerName, specialtyName)
+    let total = 0
+
+    for (var statIndex in stats){
+        total += stats[statIndex].value 
+    }
+
+    return total
+}
+
 const getStatByNameSync = (avatar, careerName, specialtyName, statName) => {
     const stats = getStatsBySpecialtySync(avatar, careerName, specialtyName)
     
@@ -321,7 +327,8 @@ const getStatByNameSync = (avatar, careerName, specialtyName, statName) => {
 
 
 export default { 
-    getDefaultAttributes, getAttributesObject, getBaseStat, getCareerNames, 
-    getSpecialtiesByCareer, getAttributesDict, getStatNamesBySpecialty, getStat, getStatByNameSync, updateStats,
+    getPropSync, getDefaultAttributes, getAttributesObject, getBaseStat, getBaseStatSync, 
+    getCareerNames, getSpecialtiesByCareer, getAttributesDict, getStatNamesBySpecialty, 
+    getStatsBySpecialtySync, getStat, getTotalStatValuesSync, getStatByNameSync, updateStats, 
     getDropExpValue, addExp
 }

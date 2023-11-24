@@ -20,13 +20,11 @@ export default function AvatarView() {
 
     useEffect(() => {
         attributesService.getAttributesDict(avatar).then( dict => {
-            console.log('follow statsUp 23', attributesDict)
             setAttributesDict(dict)        
         })
     }, [avatar])
 
     const getAttributes = () => {
-        console.log('follow statsUp 28', attributesDict)
         if(!attributesDict || attributesDict.length < 1) return <div></div>
 
         return attributesDict.map((item) => (
