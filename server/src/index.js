@@ -23,6 +23,7 @@ const PUBLIC_IMAGES = 'src/public'
 app.use(cors())
 app.use(express.json())
 
+app.use(express.static('../client/dist'))
 app.use(express.static(PUBLIC_IMAGES))
 
 Sentry.init({
@@ -51,10 +52,6 @@ app.use(Sentry.Handlers.requestHandler());
 
 // TracingHandler creates a trace for every incoming request
 app.use(Sentry.Handlers.tracingHandler());
-
-app.get('/', (request, response) => {
-  response.send('<h1>Hello World</h1>')
-})
 
 app.get('/static-path', (req, res) => {
   res.send('Ruta de archivos estáticos: ' + PUBLIC_IMAGES);
