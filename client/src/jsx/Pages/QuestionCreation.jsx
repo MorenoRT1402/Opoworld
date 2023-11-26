@@ -135,7 +135,7 @@ export default function QuestionCreation() {
                 name="optionD"
                 />
             </div>
-            <div className="margin center">
+            <div className="center" style={{ marginTop : '1%', marginBottom : '15%' }}>
                 <SelectCareer initialCareer={questionData.career} returnCareer={setCareer}/>
                 <SelectSpecialty career={questionData.career} initialSpeciality={questionData.specialty} returnSpecialty={setSpecialty}/>
                 <SelectAttribute career={questionData.career} specialty={questionData.specialty} initialAttr={questionData.attribute} returnAttr={setAttribute}/>
