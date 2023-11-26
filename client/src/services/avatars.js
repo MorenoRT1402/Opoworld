@@ -72,7 +72,6 @@ const getRandomAvatarMatchmaking = async playerAvatar => {
     if(!playerAvatar) return
     const avatars = await getAll();
     const playerPower = calculatePower(playerAvatar)
-    console.log('follow 75', playerPower, avatars)
     const potenciallyRivals = getClosestPowers(playerPower, avatars)
     const randomIndex = Math.floor(Math.random() * potenciallyRivals.length);
     return potenciallyRivals[randomIndex];

@@ -28,13 +28,11 @@ const create = (newObject) => {
 
 const getRandomOfSpecialty = async specialty => {
     const specialtyQuestions = await getAllOfSpecialty(specialty);
-    console.log('follow 30', specialty, specialtyQuestions)
     const randomIndex = Math.floor(Math.random() * specialtyQuestions.length);
     return specialtyQuestions[randomIndex];
 };
 
 const shuffleOptions = (question) => {
-    console.log('follow 36', question)
     const shuffledOptions = question.options.map((option, index) => ({
         text: option,
         correct: index === 0, // Only the first option is correct

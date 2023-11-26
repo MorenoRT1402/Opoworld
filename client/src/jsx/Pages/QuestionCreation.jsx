@@ -71,10 +71,6 @@ export default function QuestionCreation() {
     })
   }, [career, specialty, attribute])
 
-  useEffect(() => {
-    console.log('follow 73', career, specialty, attribute)
-  }, [career, specialty, attribute])
-
   const handleSubmit = (event) => {
     event.preventDefault();
 

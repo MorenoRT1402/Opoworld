@@ -21,7 +21,6 @@ function App() {
   const { user } = useContext(LoggedUserContext);
 
   useEffect(() => {
-    console.log('follow 24', user)
     redirectIfLogged('/home')
   }, [user])
 
