@@ -1,35 +1,39 @@
 import { useEffect, useState } from "react";
-import { useField } from "../../Hooks/useField";
 import attributesService from "../../services/attributes";
 import avatarsService from "../../services/avatars";
+import { useField } from "../../Hooks/useField";
 
 // eslint-disable-next-line react/prop-types
 const SelectAttribute = ( { career, specialty, initialAttr = '', returnAttr }) => {
-    const attribute = useField({ initialValue : initialAttr })
+  const attribute = useField({ initialValue : initialAttr})
+  const { field, setValue } = attribute
     const [ stats, setStats ] = useState([]) 
-    const { getStatsBySpecialtySync } = attributesService
+    const { getStatNamesBySpecialtySync } = attributesService
     const { getDefaultAvatar } = avatarsService
 
     useEffect(() => {
       if(!career || !specialty) return
       getDefaultAvatar().then( avatar => {
-        const stats = getStatsBySpecialtySync(avatar, career, specialty )
+        const stats = getStatNamesBySpecialtySync(avatar, career, specialty )
         setStats(stats)
-        returnAttr(stats[0])      
       })
     }, [specialty])
 
     useEffect(() => {
-        returnAttr(attribute.value)
-    }, [attribute.value])
+      setValue(stats[0])
+    }, [stats])
+
+    useEffect(() => {
+        returnAttr(field.value)
+    }, [field.value])
 
     return (
         <select 
-        {...attribute}
+        {...field}
         id="attributes" name="attributes">
             {stats.map((option) => (
-          <option key={option.name} value={option.name}>
-            {option.name}
+          <option key={option} value={option}>
+            {option}
           </option>
         ))}
         </select>

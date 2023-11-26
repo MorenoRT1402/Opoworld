@@ -4,13 +4,14 @@ import SelectAttribute from "../Components/SelectAttribute";
 import SelectSpecialty from "../Components/SelectSpecialty";
 import SelectCareer from "../Components/SelectCareer";
 import useError from "../../Hooks/useError";
-import avatarsServide from "../../services/avatars";
+import avatarsService from "../../services/avatars";
 import questionsService from "../../services/questions";
 import { PATHS } from "../../constants";
 import { useNavigate } from "react-router-dom";
 
 const useQuestionOptions = ( { correct = false } ) => {
-    const { value, onChange } = useField({ type : 'text' })
+    const { field } = useField({ type : 'text' })
+    const { value, onChange } = field
 
     const style = {
         backgroundColor: correct ? "lightgreen" : "#FFDDDD",
@@ -32,7 +33,8 @@ const useQuestionOptions = ( { correct = false } ) => {
 
 export default function QuestionCreation() {
     const navigate = useNavigate()
-  const question = useField({ type: 'text' });
+    const { field } = useField({ type : 'text'})
+  const question = field
   const correctOption = useQuestionOptions({ correct : true })
   const optionB = useQuestionOptions({ })
   const optionC = useQuestionOptions({ })
@@ -51,7 +53,7 @@ export default function QuestionCreation() {
 
   const { errorMessage, errorStyle, setErrorMessage } = useError()
 
-  const { getDefaultAvatar } = avatarsServide
+  const { getDefaultAvatar } = avatarsService
 
   useEffect(() => {
     getDefaultAvatar().then( avatar => {
@@ -70,8 +72,8 @@ export default function QuestionCreation() {
   }, [career, specialty, attribute])
 
   useEffect(() => {
-  }, [specialty]);
-  
+    console.log('follow 73', career, specialty, attribute)
+  }, [career, specialty, attribute])
 
   const handleSubmit = (event) => {
     event.preventDefault();

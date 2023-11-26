@@ -1,4 +1,4 @@
-import { lazy, Suspense, useContext } from 'react';
+import { lazy, Suspense, useContext, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, /*Link,*/ redirect } from 'react-router-dom';
 
 import '../css/app.css';
@@ -20,6 +20,11 @@ const BattlePage = lazy(() => import('./Pages/BattlePage.jsx'))
 function App() {
   const { user } = useContext(LoggedUserContext);
 
+  useEffect(() => {
+    console.log('follow 24', user)
+    redirectIfLogged('/home')
+  }, [user])
+
   /*
   const renderAuthenticatedPage = (component) => {
     return user ? component : <LoginPage />;
@@ -29,6 +34,7 @@ function App() {
   const redirectIfLogged = (route) => {
     return user!=null ? redirect({route}) : redirect('/login')
   }
+
   return (
     <AvatarProvider>
       <BattleProvider>
@@ -37,7 +43,7 @@ function App() {
             <Routes>
               <Route path={PATHS.ROOT} render={redirectIfLogged('/home')} element={<HomePage />} />
               <Route path={PATHS.HOME} render={redirectIfLogged('/home')} element={<HomePage />} />
-              <Route path={PATHS.LOGIN} element={<LoginPage />} />
+              <Route path={PATHS.LOGIN} render={redirectIfLogged('/home')} element={<LoginPage />} />
               <Route path={PATHS.REGISTER} element={<RegisterPage />} />
               <Route path={`${PATHS.AVATAR_EDIT}/:id?`} element={<AvatarCreation />} />
               <Route path={PATHS.QUESTION_CREATION} element={<QuestionPage />} />

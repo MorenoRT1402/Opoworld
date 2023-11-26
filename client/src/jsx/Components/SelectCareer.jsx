@@ -9,6 +9,7 @@ const SelectCareer = ( { initialCareer, returnCareer }) => {
   const { getCareerNames } = attributesService
   const [ careers, setCareers ] = useState([])
   const careerSelect = useField( { initialValue : initialCareer })
+  const { field } = careerSelect
 
   useEffect(() => {
     getCareerNames().then( options => {
@@ -17,12 +18,12 @@ const SelectCareer = ( { initialCareer, returnCareer }) => {
   }, [])
 
   useEffect(() => {
-    returnCareer(careerSelect.value)
-  }, [careerSelect.value])
+    returnCareer(field.value)
+  }, [field.value])
 
   return (
     <select
-    {...careerSelect}
+    {...field}
       id="career"
       name="carrera"
     >

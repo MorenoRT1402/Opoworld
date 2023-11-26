@@ -1,24 +1,27 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
 import { useField } from "../../Hooks/useField";
-
 import attributesService from '../../services/attributes'
 
 /* eslint-disable react/prop-types */
 const SelectSpecialty = ({ career, initialSpeciality, returnSpecialty }) => {
-    const specialty = useField({initialValue : initialSpeciality}) // Change And Save Current Specialty
+  const specialty = useField({ initialValue : initialSpeciality})
+  const { field, setValue } = specialty
     const [specialties, setSpecialties] = useState([]); // Store Updated Options for Input
     const { getSpecialtiesByCareer } = attributesService
 
     useEffect(() => {
       getSpecialtyNamesForCareer(career).then( options => {
         setSpecialties(options)
-        returnSpecialty(specialties[0])
     })}, [career])
 
     useEffect(() => {
-      returnSpecialty(specialty.value)
-    }, [specialty.value])
+      setValue(specialties[0])
+    }, [specialties])
+
+    useEffect(() => {
+      returnSpecialty(field.value)
+    }, [field.value])
 
 async function getSpecialtyNamesForCareer(career) {  
   if (!career) return []
@@ -29,7 +32,7 @@ async function getSpecialtyNamesForCareer(career) {
     
     return (
       <select
-      {...specialty}
+      {...field}
         id="specialty" name="specialty">
         {specialties.map((option) => (
           <option key={option} value={option}>

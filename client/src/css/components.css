@@ -35,3 +35,19 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .green-onclick:target {
+    background-color: green;
+  }
+
+  .red-onclick:target {
+    background-color: red;
+  }
+
+  .green {
+    background-color: green;
+  }
+
+  .red {
+    background-color: red;
+  }

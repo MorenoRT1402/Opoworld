@@ -3,7 +3,7 @@ import bdConfigService from './bdConfig'
 import attributesService from './attributes'
 import { AVATAR_PROPS, BASE_URL } from '../constants'
 
-const baseUrl = `${BASE_URL}/api/avatars/`
+const baseUrl = `${BASE_URL}/api/avatars`
 
 const { CONTENT_TYPES, getHeader } = bdConfigService
 
@@ -24,7 +24,7 @@ const getAll = () => {
 const get = (id) => {
     let idObj = id
     if (typeof(id) !== 'string') idObj = id.id
-    const url = `${baseUrl}${idObj}`
+    const url = `${baseUrl}/${idObj}`
     const request = axios.get(url)
     return request.then(response => { 
         return response.data
@@ -72,6 +72,7 @@ const getRandomAvatarMatchmaking = async playerAvatar => {
     if(!playerAvatar) return
     const avatars = await getAll();
     const playerPower = calculatePower(playerAvatar)
+    console.log('follow 75', playerPower, avatars)
     const potenciallyRivals = getClosestPowers(playerPower, avatars)
     const randomIndex = Math.floor(Math.random() * potenciallyRivals.length);
     return potenciallyRivals[randomIndex];
@@ -92,7 +93,7 @@ const create = (newObject) => {
 
 const update = (newObject, id) => {
     const config = getHeader(CONTENT_TYPES.JSON)
-    const url = `${baseUrl}${id}`
+    const url = `${baseUrl}/${id}`
     const avatar = newObject
 
     const request = axios.put( url, avatar, config)

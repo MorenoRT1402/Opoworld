@@ -12,6 +12,10 @@ import SelectSpecialty from './SelectSpecialty';
 const ConditionalRenderCareerAndSpecialty = () => {
   const { avatarData, updateAvatarData } = useContext(AvatarContext)
 
+  useEffect(() => {
+    console.log('follow 16', avatarData.career, avatarData.specialty)
+  }, [avatarData])
+
   const updateSpecialty = specialty => {
     updateAvatarData({ specialty })
   }

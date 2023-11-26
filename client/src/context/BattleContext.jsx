@@ -117,13 +117,17 @@ useEffect(() => {
     }
 
     const toggleTurn = () => {
-        setPlayerTurn((prevTurn) => !prevTurn);
+        setTimeout(() => {
+            setPlayerTurn((prevTurn) => !prevTurn);
+        }, 250)
     };
 
     const generateQuestion = () => {
         const turnOwner = playerTurn ? player : rival;
         getRandomOfSpecialty(turnOwner.specialty).then(randomQuestion => {
             const shuffledOptions = shuffleOptions(randomQuestion);
+
+            console.log('125', turnOwner.name, turnOwner.specialty, question)
     
             setQuestion({
                 ...randomQuestion,

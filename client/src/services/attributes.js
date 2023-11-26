@@ -313,6 +313,17 @@ const getTotalStatValuesSync = (avatar, careerName, specialtyName) => {
     return total
 }
 
+const getStatNamesBySpecialtySync = (avatar, careerName, specialtyName) => {
+    const stats = getStatsBySpecialtySync(avatar, careerName, specialtyName)
+    const statNames = []
+
+    stats.map( stat => {
+        statNames.push(stat.name)
+    })
+
+    return statNames;
+}
+
 const getStatByNameSync = (avatar, careerName, specialtyName, statName) => {
     const stats = getStatsBySpecialtySync(avatar, careerName, specialtyName)
     
@@ -329,6 +340,6 @@ const getStatByNameSync = (avatar, careerName, specialtyName, statName) => {
 export default { 
     getPropSync, getDefaultAttributes, getAttributesObject, getBaseStat, getBaseStatSync, 
     getCareerNames, getSpecialtiesByCareer, getAttributesDict, getStatNamesBySpecialty, 
-    getStatsBySpecialtySync, getStat, getTotalStatValuesSync, getStatByNameSync, updateStats, 
-    getDropExpValue, addExp
+    getStatsBySpecialtySync, getStat, getTotalStatValuesSync, getStatNamesBySpecialtySync, 
+    getStatByNameSync, updateStats, getDropExpValue, addExp
 }

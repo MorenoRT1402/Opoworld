@@ -22,6 +22,7 @@ export function LoggedUserProvider ({children}) {
             const userGetted = await JSON.parse(loggedUserJSON);
             setToken(userGetted.token);
             const userUpdated = await userService.get(userGetted.id)
+            console.log('follow 25', userUpdated)
             setUser(userUpdated)
             setAvatarFromUser(userGetted)
 

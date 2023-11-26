@@ -102,14 +102,27 @@ function BattlerInfo({ position = 'top', avatar }) {
 function BattleQuestion() {
     const { player, playerTurn, question, checkAnswer } = useContext(BattleContext)
 
+    const handleClick = (player, option) => {
+//        const questionOptionClass = option.correct ? "green" : "red"
+//        ev.className = 'green'
+        checkAnswer(player, option)
+    }
+
     const instanceOptions = () => {
         const options = question.options;
         if (!options || options.length < 1) return <div></div>;
 
-        return options.map((option, index) => (
-            <button key={index} onClick={() => checkAnswer(player, option)}>
-                {option.text}
+        const buttons = []
+
+        options.map((option, index) => {
+            const button = <button key={index} onClick={() => handleClick(player, option)}>
+            {option.text}
             </button>
+            buttons.push(button)
+        })
+
+        return buttons.map((button) => (
+            button
         ));
     };
 
