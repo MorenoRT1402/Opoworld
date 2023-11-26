@@ -14,9 +14,9 @@ export default function RegisterScreen() {
   const { errorMessage, errorStyle, setErrorMessage } = useError()
 
 
-  const usernameInput = useField({ type: 'text' })
-  const emailInput = useField({ type: 'text' })  
-  const passwordInput = useField({ type: 'password' })
+  const usernameInput = useField({ type: 'text' }).field
+  const emailInput = useField({ type: 'text' }).field
+  const passwordInput = useField({ type: 'password' }).field
   
   async function handleRegisterUser () {
 

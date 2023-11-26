@@ -9,8 +9,8 @@ import useError from "../../Hooks/useError";
 
 export default function LoginScreen() {
   const navigate = useNavigate()
-  const email = useField({ type: 'text' })
-  const password = useField({ type: 'password' })  
+  const email = useField({ type: 'text' }).field
+  const password = useField({ type: 'password' }).field
   const { login } = useContext(LoggedUserContext);
   const { errorMessage, errorStyle, setErrorMessage } = useError('')
   useRedirect()

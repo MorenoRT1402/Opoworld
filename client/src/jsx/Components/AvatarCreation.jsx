@@ -37,8 +37,9 @@ const ConditionalRenderCareerAndSpecialty = () => {
 export default function AvatarCreation () {
   const { id } = useParams()
   const { avatarData, updateAvatarData } = useContext(AvatarContext)
+  const { field } = useField({ type : 'text', initialValue : avatarData.name })
 
-  const name = useField({ type : 'text', initialValue : avatarData.name })
+  const name = field
 
   useEffect(() => {
     if(!id) return

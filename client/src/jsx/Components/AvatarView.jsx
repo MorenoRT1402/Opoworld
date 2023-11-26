@@ -38,7 +38,7 @@ export default function AvatarView() {
       function EditButton () {
         const avatarID = avatar ? avatar.id : ''
         return (
-            <Link to={`${PATHS.AVATAR_EDIT}/${avatarID}`} className='button' style={ { maxHeight : "30%" }} >
+            <Link to={`${PATHS.AVATAR_EDIT}/${avatarID}`} className='button' style={ { maxHeight : "25%", marginTop : '1%'}} >
                 Editar
             </Link>
         )
@@ -71,7 +71,7 @@ export default function AvatarView() {
     }, [exp, level])
 
     return (
-        <div className="border container grid vertical" style={{margin : '1%'}} >
+        <div className="border container grid" style={{margin : '1%'}} >
             <div className='grid-horizontal-d2'>
                 <img className='border container margin' src={getImage()} style={{ height : "70%", width: "70%", margin : "10px"}}></img>
                 <div>
@@ -96,7 +96,7 @@ export default function AvatarView() {
                     </div>
                 </div>
             </div>
-            <div className='grid vertical gap border container'>
+            <div className='grid vertical gap border container' style={{ marginTop : '1%' }}>
                             <h4 className='center'> Vida : {life}</h4>
                             <div className='avatar-atributes-columns container'>
                                 { getAttributes() }
