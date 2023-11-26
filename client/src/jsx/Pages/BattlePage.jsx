@@ -190,7 +190,7 @@ export default function BattlePage() {
     }
 
     return (
-        <main className="grid center fillh" style={{ margin : '0px'}}>
+        <main className="grid center fillhvh" style={{ margin : '0px'}}>
         {conditionalRender()}
         </main>
     )

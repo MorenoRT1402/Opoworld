@@ -46,7 +46,7 @@ function App() {
               <Route path={PATHS.REGISTER} element={<RegisterPage />} />
               <Route path={`${PATHS.AVATAR_EDIT}/:id?`} element={<AvatarCreation />} />
               <Route path={PATHS.QUESTION_CREATION} element={<QuestionPage />} />
-              <Route path={PATHS.BATTLE} element={<BattlePage />} />
+              <Route path={PATHS.BATTLE} element={<BattlePage />}/>
               <Route path='/users' element={<h1>Users</h1>} />
               <Route path='*' element={<h1>Not Found</h1>}/>
             </Routes>
