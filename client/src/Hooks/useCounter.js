@@ -5,7 +5,6 @@ const useCounter = () => {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            console.log(miliseconds)
             setMiliseconds((prevValue) => prevValue + 1);
         }, 1);
 

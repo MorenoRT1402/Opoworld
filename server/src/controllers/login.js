@@ -21,8 +21,6 @@ loginRouter.post('/', async (request, response) => {
             })
         }
 
-        console.log('follow 24', user)
-
         const userForToken = {
             id: user.id,
             username: user.username
