@@ -27,6 +27,9 @@ export function BattleProvider ({children}) {
 
     //#region Constants
 
+    const CPU_DIFFICULT = 5
+    const CPU_ACCURACY = CPU_DIFFICULT * 10
+
     const STAT_UP_VALUE = 2.56 // The higher the value, the easier it will be to increase the stat.
 
     const POSITIONS = {
@@ -138,14 +141,23 @@ useEffect(() => {
         if (!question || !question.options || question.options.length === 0) return;
     
 //        setTimeout(() => {
-            const randomIndex = Math.floor(Math.random() * question.options.length);
-            const selectedOption = question.options[randomIndex];
-        
+            const accuracyRandomNumber = Math.floor(Math.random() * 100);
+            let selectedOption
+            if( CPU_ACCURACY > accuracyRandomNumber )
+                selectedOption = getCorrectOption(question)
+            else {
+                const randomIndex = Math.floor(Math.random() * question.options.length);
+                selectedOption = question.options[randomIndex];
+            }
             checkAnswer(rival, selectedOption);
 //        }, 500); // Delay
     }
     
-    
+    const getCorrectOption = question => {
+        for (var option in question)
+            if (option.correct) 
+                return option
+    }
 
     const doDamage = (setTargetLife, stat) => {
         const statValue = stat.value
