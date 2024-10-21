@@ -7,7 +7,9 @@ export const BUTTONS = {
     PRIMARY: 0
 }
 
-export const BASE_URL = `${window.location.protocol}//localhost:3001`
+const HOST=import.meta.env.VITE_API_HOST;
+const PORT=import.meta.env.VITE_API_PORT
+export const BASE_URL = `${window.location.protocol}//${HOST}:${PORT}`
 
 export const PATHS = {
     ROOT : '/',

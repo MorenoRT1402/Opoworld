@@ -14,8 +14,6 @@ export function LoggedUserProvider ({children}) {
 
     const setToken = token => bdConfigService.setToken(token)
 
-//    console.log('render', user, avatar)
-
     const setUserFromLocalStorage = async () => {
         const loggedUserJSON = window.localStorage.getItem(USER_STORAGE);
         if (loggedUserJSON) {
@@ -50,10 +48,6 @@ export function LoggedUserProvider ({children}) {
         useEffect(() => {
             setUserFromLocalStorage()
         }, []);
-
-        useEffect(() => {
-//            console.log('avatar upd', avatar)
-        }, [avatar])
 
     const login = async ({ email, password }) => {
 

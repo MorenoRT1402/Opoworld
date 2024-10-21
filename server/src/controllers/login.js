@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const loginRouter = require('express').Router()
 const User = require('../DB_Connection/DAO/UserDAO')
-const { request, response } = require('express')
 
 loginRouter.post('/', async (request, response) => {
   const { body } = request

@@ -29,16 +29,8 @@ export function AvatarProvider ({children}) {
     }
 
     useEffect(() => {
-//      console.log('avatar context upd', avatarData)
-    },[avatarData])
-
-    useEffect(() => {
       initAvatar()
     } ,[])
-
-    useEffect(() => {
-//      console.log('attributes changed: ', attributes)
-    },[attributes])
 
   return (
       <AvatarContext.Provider value={{ avatarData, updateAvatarData, attributes }}>
