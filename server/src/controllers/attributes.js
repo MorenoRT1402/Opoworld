@@ -2,8 +2,8 @@ const { request, response } = require('express')
 
 const attributesRouter = require('express').Router()
 
-const defaultAttributes = require('../defaultAttributes').attributes
-const CONSTANTS = require('../constants')
+const defaultAttributes = require('../app/defaultAttributes').attributes
+const CONSTANTS = require('../app/constants')
 
 attributesRouter.get('/', async (request, response) => {
     response.json(defaultAttributes).end()

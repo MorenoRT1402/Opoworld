@@ -14,17 +14,23 @@
   "scripts": {
     "build": "npm run build --workspace=client",
     "start": "npm run start --workspace=server",
-    "dev:api": "npm run build && npm run dev --workspace=server"
+    "dev": "npm run dev --workspace=client",
+    "dev:api": "npm run build && npm run dev --workspace=server",
+    "seed": "npm run seed --workspace=server"
   },
   "eslintConfig": {
     "extends": "./node_modules/standard/eslintrc.json"
   },
   "devDependencies": {
+    "@eslint/js": "^9.13.0",
+    "eslint": "^8.57.1",
+    "eslint-plugin-react": "^7.37.1",
+    "globals": "^15.11.0",
     "standard": "17.1.0"
   },
   "dependencies": {
-    "mongoose": "7.6.1",
-    "dotenv": "16.3.1"
+    "dotenv": "16.3.1",
+    "mongoose": "7.6.1"
   },
   "keywords": [],
   "author": "",

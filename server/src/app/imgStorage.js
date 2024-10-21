@@ -1,7 +1,7 @@
 const multer = require('multer')
 const fs = require('node:fs')
 const path = require('path');
-const Avatar = require('./DB_Connection/DAO/AvatarDAO');
+const Avatar = require('../DB_Connection/DAO/AvatarDAO');
 const { PUBLIC, PUBLIC_IMAGES_DIR_NAME } = require('./constants');
 
 const BYTES_BY_MB = 1000000
